@@ -41,7 +41,7 @@
 		<?php
 			if(isset($_GET['access'])){
 				$access = $_GET['access'];
-				if($access == "letmein"){
+				if($access == ""){
 					print '<p>';
 					print "\n			";
 					print '<strong>Register an account</strong>';

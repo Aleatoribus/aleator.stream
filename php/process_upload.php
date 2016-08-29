@@ -14,7 +14,7 @@
 			echo "An error occured";
 			exit;
 		}
-
+		
 		//ensure a safe filename
 		$name = preg_replace("/[^A-Z0-9._-]/i", "_", $uploadedFile["name"]);
 
@@ -29,14 +29,14 @@
 		//preserve file from temporary directory
 		$success = move_uploaded_file($uploadedFile["tmp_name"], UPLOAD_DIR . $name);
 		if(!$success){ 
-            echo "Unable to save file.";
-            exit;
-        }
-        else{
-			$db_location = "127.0.0.1:3306";
-			$db_user = "root";
-			$db_passwd = 'Rmit1234';
-			$db_name = "aleatoribus";
+			echo "Unable to save file.";
+			exit;
+		}
+		else{
+			$db_location = "";
+			$db_user = "";
+			$db_passwd = '';
+			$db_name = "";
 			$table = "uploads";
 
 			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
@@ -50,11 +50,10 @@
 
 			print '<p align="center"><strong>Uploaded. Redirecting...</strong></p>';
 			header("refresh:1;url=/files.php");
-        }
-
-        //set proper permissions on the new file
-        chmod(UPLOAD_DIR . $name, 0644);
-    }
-    else{
-        echo "No file uploaded!";
-    }
+		}
+		//set proper permissions on the new file
+		chmod(UPLOAD_DIR . $name, 0644);
+	}
+	else{
+		echo "No file uploaded!";
+	}

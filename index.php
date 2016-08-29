@@ -23,10 +23,10 @@
 		
 		<?php
 			/* Log IP addresses of visitors */
-			$db_location = "127.0.0.1:3306";
-			$db_user = "root";
-			$db_passwd = 'Rmit1234';
-			$db_name = "aleatoribus";
+			$db_location = "";
+			$db_user = "";
+			$db_passwd = '';
+			$db_name = "";
 			$table = "visitors";
 			
 			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
