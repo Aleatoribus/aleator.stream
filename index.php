@@ -27,15 +27,15 @@
 			$db_user = "";
 			$db_passwd = '';
 			$db_name = "";
-			$table = "visitors";
+			$table = "";
 			
 			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 			
 			$ip = $_SERVER['REMOTE_ADDR'];
-		
-			$insert = "insert into $table values(null, '$ip')";
 			
-			mysqli_query($db, $insert) or die(mysqli_error());
+			$log = "insert into $table values(null, '$ip')";
+			
+			mysqli_query($db, $log) or die(mysqli_error());
 
 			/* Print content to page depending on session status. */
 			if(isset($_SESSION['username'])){
@@ -50,7 +50,41 @@
 				print "\n			";
 				print '<form action="php/process_upload.php" method="post" enctype="multipart/form-data">';
 				print "\n				";
-				print 'Title: <input type="text" name="upload_name" /><br><br>';
+				print 'Title: <input type="text" name="upload_name"/>';
+				print "\n				";
+				print '<p style="font-size: 85%;">';
+				print "\n					";
+				print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayOptions(this)"> Use encryption';
+				print "\n				";
+				print '</p>';
+				print "\n				";
+				print '<div id="encryptionOptions" style="display:none;font-size: 85%;">';
+				print "\n					";
+				print '<p>';
+				print "\n						";
+				print 'Key: <input type="password" name="key"/>';
+				print "\n						";
+				print 'Cipher: ';
+				print "\n						";
+				print '<select name="cipher">';
+				print "\n							";
+				print '<option value="aes-256-cbc">AES-256-CBC</option>';
+				print "\n							";
+				print '<option value="aes-128-cbc">AES-128-CBC</option>';
+				print "\n							";
+				print '<option value="bf-cbc">BF-CBC</option>';
+				print "\n						";
+				print '</select>';
+				print "\n					";
+				print '</p>';
+				print "\n					";
+				print '<p>';
+				print "\n						";
+				print '<input type="checkbox" name="decryption" value="disallow"> Disallow server-side decryption';
+				print "\n					";
+				print '</p>';
+				print "\n				";
+				print '</div>';
 				print "\n				";
  				print '<input type="file" name="uploadedFile">';
  				print "\n				";
@@ -63,7 +97,7 @@
 				print "\n		";
 				print '<p id="upload-data">';
 				print "\n			";
-				print '<a href="/files.php">My uploads</a>. Max filesize: 300MB';
+				print '<a href="/uploads.php">My uploads</a>. Max filesize: 300MB';
 				print "\n		";
 				print '</p>';
 				print "\n		";
@@ -77,13 +111,23 @@
 				print "\n		";
 				print "\n		";
 				if(isset($_GET['login'])){
-					print '<p style="color:red;">';
+					print '<p style="color:red; font-size:85%;">';
 					$login = $_GET['login'];
-					if($login == 0){
+					if($login == 1){
 						print "Invalid credentials."; 
 					}
-					else if($login == 1){
+					else if($login == 0){
 						print "Username and/or password cannot be blank."; 
+					}
+					print '</p>';
+					print "\n		";
+					print "\n		";
+				}
+				else if(isset($_GET['register'])){
+					print '<p style="color:green; font-size:85%;">';
+					$register = $_GET['register'];
+					if($register == 1){
+						print "You've created an account! You may now log in."; 
 					}
 					print '</p>';
 					print "\n		";
@@ -126,15 +170,7 @@
 		<p>
 			<audio controls>
 				<?php
-					$random = rand(0, 1);
-					if($random == 1){
-						print '<source src="media/joplin01.mp3" type="audio/mpeg">';
-						print "\n";
-					}
-					else{
-						print '<source src="media/joplin02.mp3" type="audio/mpeg">';
-						print "\n";
-					}
+					print '<source src="media/joplin0' . rand(1, 2) . '.mp3" type="audio/mpeg">' . "\n";
 				?>
 				Your browser does not support HTML5 content.
 			</audio>
@@ -142,10 +178,16 @@
 
 		<footer>
 			<hr>
-			Aleator Stream is an open source project licensed under version 2.0 of the Apache Licence.
+			Aleator Stream is an <a href="https://github.com/Aleatoribus">open source</a> project licensed under version 2.0 of the Apache Licence.
 		</footer>
 
 		</div>
+
+		<?php
+			if(isset($_SESSION['username'])){
+				print '<script src="js/displayOptions.js"></script>' . "\n";
+			}
+		?>
 
 	</body>
 </html>

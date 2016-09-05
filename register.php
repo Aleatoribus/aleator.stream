@@ -1,12 +1,11 @@
 <?php
 	session_start();
 	if(isset($_SESSION['username'])){
-		//redirect to error page
 		header("Location:/");
-		exit(0);
+		exit();
 	}
 
-	$title = 'Aleator Stream';
+	$title = 'Register | Aleator Stream';
 	include("inc/header.inc");
 ?>
 
@@ -44,7 +43,7 @@
 				if($access == ""){
 					print '<p>';
 					print "\n			";
-					print '<strong>Register an account</strong>';
+					print '<strong>Register a demo account</strong>';
 					print "\n		";
 					print '</p>';
 					print "\n		";
