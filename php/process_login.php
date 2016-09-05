@@ -1,10 +1,10 @@
 <?php
 	session_start();
 	if(!isset($_SESSION['username'])){
-			if(isset($_POST['username']) && isset($_POST['password'])){
+		if(isset($_POST['username']) && isset($_POST['password'])){
 			$username = $_POST['username'];
 			$password = $_POST['password'];
-		
+	
 			if($username != null && $password != null){
 				$db_source = "";
 				$db_user = "";
