@@ -5,7 +5,7 @@
 		<meta charset="UTF-8"/>
 		<link rel="icon" href="favicon.ico"/>
 		<link rel="stylesheet" type="text/css" href="css/style.css"/>
-		<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin"/>
+		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin"/>
 		<script src="https://use.fontawesome.com/646b36f2aa.js"></script>
 	</head>
 	<body>
