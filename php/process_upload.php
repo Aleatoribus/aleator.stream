@@ -1,4 +1,5 @@
 <?php
+	include("inc/security.inc");
 	session_start();
 	if(!isset($_SESSION['username'])){
 		header("Location:/");
@@ -42,13 +43,13 @@
 				$check = $uploadDir . $name;
 
 				while(file_exists($check)){
-					$id = bin2hex(openssl_random_pseudo_bytes($bits));
+					$id = md5(microtime() . $plainName . rand());
 					$name = $id . "." . $parts["extension"];
 				}
 
 				$db_location = "";
 				$db_user = "";
-				$db_passwd = '';
+				$db_passwd = "";
 				$db_name = "";
 				$table = "uploads_" . $usrHash;
 

@@ -7,7 +7,7 @@
 				if(isset($_SESSION['username'])){
 					$db_location = "";
 					$db_user = "";
-					$db_passwd = '';
+					$db_passwd = "";
 					$db_name = "";
 					$username = $_SESSION['username'];
 					$usrHash = md5(strtolower($username));
@@ -42,9 +42,12 @@
 					}
 				}
 				else{
-					print "<p>You're not logged in!</p>";
+					print "<p><strong>You're not logged in!</strong></p>";
+					print '<p style="font-size: 90%;">You should log in. Or maybe just keep refreshing the page.</p>';
+					print "<p>";
+					print '<img src="media/gogh0' . rand(1, 3) . '.jpg" alt="Van Gogh" style="width:50%;height:50%;">' . "\n";
+					print "</p>";
 				}
-				/*mysqli_query($db, $insert) or die(mysqli_error());*/
 			?>
 
 			<footer>

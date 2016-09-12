@@ -1,5 +1,4 @@
 <?php
-	@session_start();
 	$title = 'About | Aleator Stream';
 	include("inc/header.inc");
 ?>

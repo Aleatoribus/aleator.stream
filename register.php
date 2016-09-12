@@ -10,32 +10,6 @@
 ?>
 
 	<div align="center">
-		
-		<div style="font-size: 70%;">
-			<p>
-				<em>We don't know who you are.</em>
-			</p>
-			<p>
-				<em>We don't know what you want.</em>
-			</p>
-			<p>
-				<em>If you're looking for Dropbox we can tell you we don't have the money, but what we do have are a very particular set of skills.</em>
-			</p>
-			<p>
-				<em>Skills we have acquired over a very long education.</em>
-			</p>
-			<p>
-				<em>Skills that make us a godsend for people like you.</em>
-			</p>
-			<p>
-				<em>If you create an account now that'll be the end of it.</em>
-			</p>
-			<p>
-				<em>We will not look for you, we will not pursue you, but if you don't, we will look for you, we will find you and we will store your files securely.</em>
-			</p>
-		</div>
-
-		<hr>
 
 		<?php
 			if(isset($_GET['access'])){
@@ -73,6 +47,11 @@
 					print "\n		";
 					print '</p>';
 					print "\n		";
+					print '<p>';
+					print "\n			";
+					print '<img src="media/nope.gif" alt="Nope">';
+					print "\n		";
+					print '</p>';
 				}
 			}
 			else{
@@ -82,8 +61,27 @@
 				print "\n		";
 				print '</p>';
 				print "\n		";
+				print "\n		";
+				print '<p>';
+				print "\n			";
+				print '<img src="media/nope.gif" alt="Nope">';
+				print "\n		";
+				print '</p>';
 			}
 		?>
+
+		<hr>
+
+		<div style="font-size: 70%;">
+			<p>
+				<em>If you create an account now that'll be the end of it.</em>
+			</p>
+			<p>
+				<em>We will not look for you, we will not pursue you, but if you don't, we will look for you, we will find you and we will store your files securely.</em>
+			</p>
+		</div>
+
+		<hr>
 		
 		<footer>
 			<!-- <hr> -->
