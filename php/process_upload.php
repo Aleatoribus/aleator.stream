@@ -45,6 +45,7 @@
 				while(file_exists($check)){
 					$id = md5(microtime() . $plainName . rand());
 					$name = $id . "." . $parts["extension"];
+					$check = $uploadDir . $name;
 				}
 
 				$db_location = "";

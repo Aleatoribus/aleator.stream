@@ -18,6 +18,8 @@
 			?>
 		</h2>
 
+		<p style="font-size: 80%;">New! - <a href="http://c6ogbcnl32dr6mwb.onion">c6ogbcnl32dr6mwb.onion</a> on TOR.</p>
+
 		<hr>
 		
 		<?php
@@ -29,9 +31,9 @@
 				print '<form action="php/process_upload.php" method="post" enctype="multipart/form-data">' . "\n				";
 				print 'Title: <input type="text" name="upload_name"/>' . "\n				";
 				print '<p style="font-size: 85%;">' . "\n					";
-				print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayOptions(this)"> Use encryption' . "\n				";
+				print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayUploadOptions(this)"> Use encryption' . "\n				";
 				print '</p>' . "\n				";
-				print '<div id="encryptionOptions" style="display:none;font-size: 85%;">' . "\n					";
+				print '<div id="uploadEncryptionOptions" style="display:none;font-size: 85%;">' . "\n					";
 				print '<p>' . "\n						";
 				print 'Key: <input type="password" name="key"/>' . "\n						";
 				print 'Cipher: ' . "\n						";
@@ -68,6 +70,21 @@
 				print '<p style="font-size: 85%;">' . "\n				";
 				print '<input type="checkbox" name="publicity" value="public"> Publish this note publically.' . "\n					";
 				print '</p>' . "\n				";
+				print '<p style="font-size: 85%;">' . "\n				";
+				print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayNoteOptions(this)"> Use encryption.' . "\n					";
+				print '</p>' . "\n				";
+				print '<div id="noteEncryptionOptions" style="display:none;font-size: 85%;">' . "\n					";
+				print '<p>' . "\n						";
+				print 'Key: <input type="password" name="key"/>' . "\n						";
+				print 'Cipher: ' . "\n						";
+				print '<select name="cipher">' . "\n							";
+				print '<option value="aes-256-cbc">AES-256-CBC</option>' . "\n							";
+				print '<option value="aes-192-cbc">AES-192-CBC</option>' . "\n							";
+				print '<option value="aes-128-cbc">AES-128-CBC</option>' . "\n							";
+				print '<option value="bf-cbc">BF-CBC</option>' . "\n						";
+				print '</select>' . "\n					";
+				print '</p>' . "\n					";
+				print '</div>' . "\n				";
  				print '<input type="submit" value="Publish">' . "\n			";
 				print '</form>' . "\n		";
 				print '</p>' . "\n		";
@@ -99,7 +116,7 @@
 					print '</p>' . "\n		\n		";
 				}
 				print '<p>' . "\n			";
-				print '<form method="post" action="php\process_login.php">' . "\n				";
+				print '<form method="post" action="php/process_login.php">' . "\n				";
 				print 'Username: <input type="text" name="username" /><br><br>' . "\n				";
 				print 'Password: <input type="password" name="password" /><br><br>' . "\n				";
 				print '<input type="submit" value="Login" />' . "\n			";

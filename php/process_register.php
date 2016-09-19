@@ -54,7 +54,8 @@
 							title varchar(64), 
 							note_dir varchar(128),
 							uploader varchar(32),
-							encrypted boolean
+							encrypted boolean,
+							cipher varchar(16)
 							)";
 
 							mysqli_query($db, $createUserNoteTable) or die(mysqli_error($db));

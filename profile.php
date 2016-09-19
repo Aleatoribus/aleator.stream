@@ -50,7 +50,7 @@
 						print "Number of uploads: " . $total;
 						print '</p>';
 						print '<p style="font-size: 85%; ">';
-						print "Number of encrypted uploads: " . $totalEnc;
+						print "Number of encrypted uploads: " . $totalEnc ."/" . $total;
 						print '</p>';
 					}
 					else{
@@ -85,7 +85,7 @@
 						print "Number of notes: " . $totalNotesPrivate;
 						print '</p>';
 						print '<p style="font-size: 85%; ">';
-						print "Number of encrypted notes: " . $totalEncNotesPrivate;
+						print "Number of encrypted notes: " . $totalEncNotesPrivate ."/" . $total;
 						print '</p>';
 					}
 					else{
@@ -113,7 +113,7 @@
 						print "Number of notes: " . $totalNotesPublic;
 						print '</p>';
 						print '<p style="font-size: 85%; ">';
-						print "Number of encrypted notes: " . $totalEncNotesPublic;
+						print "Number of encrypted notes: " . $totalEncNotesPublic ."/" . $total;
 						print '</p>';
 					}
 					else{
@@ -194,8 +194,8 @@
 		?>
 		
 		<footer>
-			<!-- <hr> -->
-			<!-- Aleatoribus is an open source project licensed under version 2.0 of the Apache Licence. -->
+			<hr>
+			Aleatoribus is an <a href="https://github.com/Aleatoribus">open source</a> project licensed under version 2.0 of the Apache Licence.
 		</footer>
 	</div>
 
