@@ -42,6 +42,8 @@
 				print '<p>You are not logged in</p>';
 			}
 
+			print '<p>Session ID: ' . session_id() . '</p>';
+
 			print '<p>We see your IP address as: ' . $_SERVER['REMOTE_ADDR'] . '</p>';
 
 			print '<p>You are accessing our website via: ' . $_SERVER['HTTP_HOST'] . ' on remote port: ' . $_SERVER['SERVER_PORT'] . ' and local port: ' . $_SERVER['REMOTE_PORT'] . '</p>';
@@ -51,7 +53,7 @@
 			if($_SERVER['HTTPS'] == "on"){
 				print '<p>You are using HTTPS connection security. We\'ve enabled this by force.</p>';
 			}
-			else if($_SERVER['HTTPS'] != "on" && $_SERVER['HTTP_HOST'] == "c6ogbcnl32dr6mwb.onion"){
+			else if($_SERVER['HTTPS'] != "on" && $_SERVER['HTTP_HOST'] == "z54pzh3e2qg4phj5.onion"){
 				print '<p>You are not using HTTPS connection security, but you are connecting via TOR.</p>';
 			}
 			else{
@@ -60,8 +62,6 @@
 
 			print '<p id="noscript">JavaScript is not enabled, or is being blocked on this page.</p>';
 			print '<p id="script"></p>';
-
-			print '<p>Do Not Track header: ' . $_SERVER['HTTP_DNT'];
 
 			print '<h2>MKV playback test</h2>';
 			print '<p>You\'re using: ' . get_browser_name() . '</p>';

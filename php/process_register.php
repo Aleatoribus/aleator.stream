@@ -8,10 +8,10 @@
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 			
 			if($username != null && $password != null){
-				$db_source = "";
-				$db_user = "";
-				$db_passwd = "";
-				$db_use = "";
+				$db_source = """";
+				$db_user = """";
+				$db_passwd = """";
+				$db_use = """";
 				
 				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
 				
@@ -25,7 +25,7 @@
 				else{
 					$usrHash = md5(strtolower($username));
 
-					if(!mkdir("/var/www/aleator.stream/html/uploads/$usrHash", 0755)){
+					if(!mkdir("/var/www/aleator.stream/uploads/$usrHash", 0700)){
 						print "Error: Failed to create user uploads directory. Please report this.";
 						exit();
 					}
@@ -42,9 +42,11 @@
 							id serial primary key,
 							upload_name varchar(64), 
 							upload_file varchar(128),
+							shared boolean,
 							encrypted boolean,
 							cipher varchar(16),
-							allow_server_decryption boolean
+							allow_server_decryption boolean,
+							password varchar(255)
 							)";
 							mysqli_query($db, $createUserUploadTable) or die(mysqli_error($db));
 

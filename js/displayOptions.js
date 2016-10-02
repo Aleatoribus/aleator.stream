@@ -45,3 +45,18 @@ function displayContributor(contributor){
 
 	divContent.style.display = 'block';	
 }
+
+function getFileInfo(file){
+	var fileSize = file.files[0].size/1000000;
+	if(fileSize > 500){
+		var diff = fileSize - 500;
+		var roundedDiff = Math.round(diff * 100) / 100
+		document.getElementById('upload').disabled = true;
+		var error = "File exceeds the upload limit by " + roundedDiff + "MB.";
+		document.getElementById("uploadError").innerHTML = error;
+	}
+	else{
+		document.getElementById('upload').disabled = false;
+		document.getElementById("uploadError").innerHTML = "";
+	}
+}

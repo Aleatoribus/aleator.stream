@@ -16,10 +16,10 @@
 					print "This page is only visible to you.";
 					print '</p>';
 
-					$db_location = "";
-					$db_user = "";
-					$db_passwd = "";
-					$db_name = "";
+					$db_location = """";
+					$db_user = """";
+					$db_passwd = '""';
+					$db_name = """";
 					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 					
 					/* Uploads */
@@ -30,7 +30,7 @@
 					$qUploads = "select * from $uploadsTable";
 					$rUploads = mysqli_query($db, $qUploads) or die(mysqli_error());
 
-					$uploadDir = "/var/www/aleator.stream/html/uploads/" . $usrHash . "/";
+					$uploadDir = "/var/www/aleator.stream/uploads/" . $usrHash . "/";
 					$total = 0;
 					$totalEnc = 0;
 					
@@ -85,7 +85,7 @@
 						print "Number of notes: " . $totalNotesPrivate;
 						print '</p>';
 						print '<p style="font-size: 85%; ">';
-						print "Number of encrypted notes: " . $totalEncNotesPrivate ."/" . $total;
+						print "Number of encrypted notes: " . $totalEncNotesPrivate ."/" . $totalNotesPrivate;
 						print '</p>';
 					}
 					else{
@@ -113,7 +113,7 @@
 						print "Number of notes: " . $totalNotesPublic;
 						print '</p>';
 						print '<p style="font-size: 85%; ">';
-						print "Number of encrypted notes: " . $totalEncNotesPublic ."/" . $total;
+						print "Number of encrypted notes: " . $totalEncNotesPublic ."/" . $totalNotesPublic;
 						print '</p>';
 					}
 					else{

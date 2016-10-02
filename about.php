@@ -33,41 +33,41 @@
 
 			<p>
 				<div id="default">
-					<img src="media/incognito.png" alt="No contributor selected." width="15%" height="15%"/>
+					<img src="media/incognito.png" alt="No contributor selected." width="20%" height="20%"/>
 				</div>
 
 				<div id="Aaron" style="display: none;">
-					<img src="media/aaron.png" alt="Aaron." width="15%" height="15%"/>
+					<img src="media/aaron.png" alt="Aaron." width="20%" height="20%"/>
 					<p style="font-size: 85%;">
-						Information about Aaron.
+						Aaron is a final year Associate degree student, and has a Cert IV in IT.
 					</p>
 				</div>
 
 				<div id="Samuel" style="display: none;">
-					<img src="media/samuel.png" alt="Sameul." width="15%" height="15%"/>
+					<img src="media/samuel.png" alt="Sameul." width="20%" height="20%"/>
 					<p style="font-size: 85%;">
-						Information about Samuel.
+						Samuel is a final year Associate degree student, and has a Cert IV in IT.
 					</p>
 				</div>
 
 				<div id="Phu" style="display: none;">
-					<img src="media/phu.png" alt="Phu." width="15%" height="15%"/>
+					<img src="media/phu.png" alt="Phu." width="20%" height="20%"/>
 					<p style="font-size: 85%;">
-						Information about Phu.
+						Phu is a first year Bachelor degree student.
 					</p>
 				</div>
 
 				<div id="Vanja" style="display: none;">
-					<img src="media/vanja.png" alt="Vanja." width="15%" height="15%"/>
+					<img src="media/vanja.png" alt="Vanja." width="20%" height="20%"/>
 					<p style="font-size: 85%;">
-						Information about Vanja.
+						Vanja is a first year Bachelor degree student.
 					</p>
 				</div>
 
 				<div id="Zac" style="display: none;">
-					<img src="media/zac.png" alt="Zac." width="15%" height="15%"/>
+					<img src="media/zac.png" alt="Zac." width="20%" height="20%"/>
 					<p style="font-size: 85%;">
-						Information about Zac.
+						Zac is a first year Bachelor degree student.
 					</p>
 				</div>
 			</p>
@@ -80,6 +80,20 @@
 
 			<p>
 				We're making an open source file sharing service with optional strong encryption. 
+			</p>
+
+			<h2>Contact</h2>
+
+			<p>
+				For general matters contact <a href="mailto:admin@aleator.stream">admin@aleator.stream</a>.
+			</p>
+
+			<p>
+				For matters of security requiring urgent attention contact <a href="mailto:security@aleator.stream">security@aleator.stream</a>.
+			</p>
+
+			<p>
+				<i class="fa fa-key" aria-hidden="true"></i> <a href="media/public.asc">Our PGP public key.</a>
 			</p>
 
 			<script src="js/displayOptions.js"></script>

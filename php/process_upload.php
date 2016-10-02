@@ -9,7 +9,7 @@
 		$username = $_SESSION['username'];
 		$usrHash = md5(strtolower($username));
 
-		$uploadDir = "/var/www/aleator.stream/html/uploads/" . $usrHash . "/";
+		$uploadDir = "/var/www/aleator.stream/uploads/" . $usrHash . "/";
 		$tmpEncDir = "/var/www/aleator.stream/tmp/";
 
 		if(!empty($_FILES["uploadedFile"])){
@@ -48,10 +48,10 @@
 					$check = $uploadDir . $name;
 				}
 
-				$db_location = "";
-				$db_user = "";
-				$db_passwd = "";
-				$db_name = "";
+				$db_location = """";
+				$db_user = """";
+				$db_passwd = '""';
+				$db_name = """";
 				$table = "uploads_" . $usrHash;
 
 				if($_POST['upload_name'] != null){
@@ -61,12 +61,25 @@
 					$upload_name = "Untitled";
 				}
 
+				if(isset($_POST['share'])){
+					$shared = 1;
+				}
+				else{
+					$shared = 0;
+				}
+
 				if(isset($_POST['encryption'])){
 					$tmp_dir = $tmpEncDir . $name;
 					$enc_dir = $uploadDir . $name . ".enc";
 					$enc_name = $name . ".enc";
 					$cipher = $_POST['cipher'];
 					$key = $_POST['key'];
+					$hashedKey = password_hash($key, PASSWORD_DEFAULT);
+
+					if($key == null){
+						//indentified issue
+						exit();
+					}
 
 					if(isset($_POST['decryption'])){
 						$allowOnlineDecryption = 0;
@@ -85,15 +98,17 @@
 						exit();
 					}
 					else{
+						chmod($tmp_dir, 0700); //note to self, repeat this in other cases
+
 						$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
-						$insert = "insert into $table values(null, '$upload_name', '$enc_name', 1, '$cipher', '$allowOnlineDecryption')";
+						$insert = "insert into $table values(null, '$upload_name', '$enc_name', $shared, 1, '$cipher', '$allowOnlineDecryption', '$hashedKey')";
 
 						mysqli_query($db, $insert) or die(mysqli_error());
 
 						shell_exec("openssl $cipher -a -salt -in $tmp_dir -out $enc_dir -pass pass:$key && rm -f $tmp_dir");
 
-						chmod($uploadDir . $enc_name, 0644);
+						chmod($enc_dir, 0700);
 
 						print '<div align="center">';
 						print '<p><strong>Uploaded encrypted file. Redirecting...</strong></p>';
@@ -114,11 +129,11 @@
 						exit();
 					}
 					else{
-						chmod($uploadDir . $name, 0644);
+						chmod($uploadDir . $name, 0700);
 
 						$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
-						$insert = "insert into $table values(null, '$upload_name', '$name', 0, 'null', 0)";
+						$insert = "insert into $table values(null, '$upload_name', '$name', $shared, 0, 'null', 0, 'null')";
 
 						mysqli_query($db, $insert) or die(mysqli_error());
 

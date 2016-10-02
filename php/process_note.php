@@ -17,10 +17,10 @@
 			$name = md5(microtime() . $title . rand()) . ".txt";
 		}
 
-		$db_location = "";
-		$db_user = "";
-		$db_passwd = "";
-		$db_name = "";
+		$db_location = """";
+		$db_user = """";
+		$db_passwd = '""';
+		$db_name = """";
 
 		if(isset($_POST['publicity'])){
 			$table = "notes"; //public notes table

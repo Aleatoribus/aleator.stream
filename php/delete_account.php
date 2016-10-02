@@ -19,10 +19,10 @@
 				$username = $_SESSION['username'];
 				$password = $_POST['password'];
 
-				$db_source = "";
-				$db_user = "";
-				$db_passwd = "";
-				$db_use = "";
+				$db_source = """";
+				$db_user = """";
+				$db_passwd = """";
+				$db_use = """";
 				
 				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
 				
@@ -35,7 +35,7 @@
 
 					if(password_verify($password, $hashed_password)){
 						$usrHash = md5(strtolower($username));
-						$uploadsDir = "/var/www/aleator.stream/html/uploads/" . $usrHash . "/";
+						$uploadsDir = "/var/www/aleator.stream/uploads/" . $usrHash . "/";
 						$notesDir = "/var/www/aleator.stream/html/notes/" . $usrHash . "/";
 						$uploadsTable = "uploads_" . $usrHash;
 						$notesTable = "notes_" . $usrHash;
