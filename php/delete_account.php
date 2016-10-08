@@ -19,10 +19,10 @@
 				$username = $_SESSION['username'];
 				$password = $_POST['password'];
 
-				$db_source = """";
-				$db_user = """";
-				$db_passwd = """";
-				$db_use = """";
+				$db_source = "";
+				$db_user = "";
+				$db_passwd = "";
+				$db_use = "";
 				
 				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
 				

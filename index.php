@@ -22,44 +22,76 @@
 		
 		<?php
 			if(isset($_SESSION['username'])){
+				$username = $_SESSION['username'];
+				$usrHash = md5(strtolower($username));
+				$uploadDir = "/var/www/aleator.stream/uploads/" . $usrHash . "/";
 				print '<p>' . "\n			";
 				print '<strong>Upload a file</strong>' . "\n		";
 				print '</p>' . "\n		\n		";
-				print '<p>' . "\n			";
-				print '<form action="php/process_upload.php" method="post" enctype="multipart/form-data">' . "\n				";
-				print 'Title: <input type="text" name="upload_name"/>' . "\n				";
-				print '<p style="font-size: 85%;">' . "\n					";
-				print '<input type="checkbox" name="share" value="shared"> Make shareable.' . "\n				";
-				print '</p>' . "\n				";
-				print '<p style="font-size: 85%;">' . "\n					";
-				print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayUploadOptions(this)"> Use encryption.' . "\n				";
-				print '</p>' . "\n				";
-				print '<div id="uploadEncryptionOptions" style="display:none;font-size: 85%;">' . "\n					";
-				print '<p>' . "\n						";
-				print '<i class="fa fa-key" aria-hidden="true"></i> Key: <input type="password" name="key"/>' . "\n						";
-				print 'Cipher: ' . "\n						";
-				print '<select name="cipher">' . "\n							";
-				print '<option value="aes-256-cbc">AES-256-CBC</option>' . "\n							";
-				print '<option value="aes-192-cbc">AES-192-CBC</option>' . "\n							";
-				print '<option value="aes-128-cbc">AES-128-CBC</option>' . "\n							";
-				print '<option value="camellia-256-cbc">Camellia-256-CBC</option>' . "\n							";
-				print '<option value="camellia-192-cbc">Camellia-192-CBC</option>' . "\n							";
-				print '<option value="camellia-128-cbc">Camellia-128-CBC</option>' . "\n							";
-				print '<option value="bf-cbc">BF-CBC</option>' . "\n						";
-				print '</select>' . "\n					";
-				print '</p>' . "\n					";
-				print '<p>' . "\n						";
-				print '<input type="checkbox" name="decryption" value="disallow"> Disallow server-side decryption' . "\n					";
-				print '</p>' . "\n				";
-				print '</div>' . "\n				";
- 				print '<input type="file" name="uploadedFile" onchange="getFileInfo(this)">' . "\n				";
- 				print '<input type="submit" id="upload" value="Upload">' . "\n			";
-				print '</form>' . "\n		";
-				print '</p>' . "\n		\n		";
-				print '<p id="uploadError" style="font-size: 80%; color: red;"></p>' . "\n		\n		";
-				print '<p id="upload-data" style="font-size: 85%;">' . "\n			";
-				print '<a href="/uploads.php">My uploads</a>. Max filesize: ' . ini_get('upload_max_filesize') . "B\n		";
-				print '</p>' . "\n		\n		";
+
+				//Check if usage exceeds quota
+
+				$db_location = "";
+				$db_user = "";
+				$db_passwd = '';
+				$db_name = "";
+				$table = "uploads_" . $usrHash;
+
+				$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+
+				$qUploads = "select * from $table";
+				$rUploads = mysqli_query($db, $qUploads) or die(mysqli_error());
+
+				while($row = mysqli_fetch_array($rUploads)){
+					$bytes =  $bytes + filesize($uploadDir . $row['upload_file']);
+				}
+
+				$usage = number_format($bytes / 1048576, 2);
+
+				if(($usage/5000)*100 > 100){
+					print '<p>';
+					print '<i class="fa fa-frown-o" aria-hidden="true" style="font-size: 500%;"></i>';
+					print '</p>';
+					print '<p style="font-size: 85%; color: red;">You\'ve exceeded your storage quota!</p>';
+				}
+				else{
+					print '<p>' . "\n			";
+					print '<form action="php/process_upload.php" method="post" enctype="multipart/form-data">' . "\n				";
+					print 'Title: <input type="text" name="upload_name"/>' . "\n				";
+					print '<p style="font-size: 85%;">' . "\n					";
+					print '<input type="checkbox" name="share" value="shared"> Make shareable.' . "\n				";
+					print '</p>' . "\n				";
+					print '<p style="font-size: 85%;">' . "\n					";
+					print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayUploadOptions(this)"> Use encryption.' . "\n				";
+					print '</p>' . "\n				";
+					print '<div id="uploadEncryptionOptions" style="display:none;font-size: 85%;">' . "\n					";
+					print '<p>' . "\n						";
+					print '<i class="fa fa-key" aria-hidden="true"></i> Key: <input type="password" name="key"/>' . "\n						";
+					print 'Cipher: ' . "\n						";
+					print '<select name="cipher">' . "\n							";
+					print '<option value="aes-256-cbc">AES-256-CBC</option>' . "\n							";
+					print '<option value="aes-192-cbc">AES-192-CBC</option>' . "\n							";
+					print '<option value="aes-128-cbc">AES-128-CBC</option>' . "\n							";
+					print '<option value="camellia-256-cbc">Camellia-256-CBC</option>' . "\n							";
+					print '<option value="camellia-192-cbc">Camellia-192-CBC</option>' . "\n							";
+					print '<option value="camellia-128-cbc">Camellia-128-CBC</option>' . "\n							";
+					print '<option value="bf-cbc">BF-CBC</option>' . "\n						";
+					print '</select>' . "\n					";
+					print '</p>' . "\n					";
+					print '<p>' . "\n						";
+					print '<input type="checkbox" name="decryption" value="disallow" disabled> Disallow server-side decryption' . "\n					";
+					print '</p>' . "\n				";
+					print '</div>' . "\n				";
+	 				print '<input type="file" name="uploadedFile" onchange="getFileInfo(this)">' . "\n				";
+	 				print '<input type="submit" id="upload" value="Upload">' . "\n			";
+					print '</form>' . "\n		";
+					print '</p>' . "\n		\n		";
+					print '<p id="uploadError" style="font-size: 80%; color: red;"></p>' . "\n		\n		";
+					print '<p id="upload-data" style="font-size: 85%;">' . "\n			";
+					print '<a href="/uploads.php">My uploads</a>. Max filesize: ' . ini_get('upload_max_filesize') . "B\n		";
+					print '</p>' . "\n		\n		";
+				}
+
 				print '<hr>' . "\n		\n		";
 				print '<p>' . "\n			";
 				print '<form action="php/process_note.php" method="post" enctype="multipart/form-data">' . "\n				";
@@ -160,8 +192,8 @@
 		</p>
 
 		<?php
-			if(isset($_SESSION['username'])){
+			/*if(isset($_SESSION['username'])){
 				print '<script src="js/displayOptions.js"></script>' . "\n		\n		";
-			}
+			}*/
 			include("inc/footer.inc");
 		?>

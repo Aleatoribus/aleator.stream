@@ -1,0 +1,15 @@
+User-agent: *
+Disallow: 
+Disallow: /cgi-bin/
+Disallow: /css/
+Disallow: /inc/
+Disallow: /js/
+Disallow: /media/
+Disallow: /notes/
+Disallow: /php/
+Disallow: /diagnostics.php
+Disallow: /display.php
+Disallow: /profile.php
+Disallow: /uploads.php
+
+Sitemap: https://aleator.stream/sitemap.xml

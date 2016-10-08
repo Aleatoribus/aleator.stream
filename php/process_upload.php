@@ -16,23 +16,32 @@
 			$uploadedFile = $_FILES["uploadedFile"];
 
 			if($uploadedFile["error"] !== UPLOAD_ERR_OK){
-				print '<div align="center">';
-				print '<p><strong>Whoops!</strong></p>';
+				$title = 'Error | Aleator Stream';
+				include("/var/www/aleator.stream/html/inc/header.inc");
+				print '<p>';
+				print '<strong>Error</strong>';
+				print '</p>';
+				print '<p>';
+				print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+				print '</p>';
+				print '<p style="font-size: 90%; color: red;">';
+
 				if($uploadedFile["error"] == 1 || $uploadedFile["error"] == 2){
-					print '<p>File is larger than the server limit of 300MB.</p>';
+					print 'File is larger than the server limit of 300MB.';
 				}
 				else if($uploadedFile["error"] == 3){
-					print '<p>File was only partially uploaded.</p>';
+					print 'File was only partially uploaded.';
 				}
 				else if($uploadedFile["error"] == 4){
-					print '<p>No file specified for upload.</p>';
+					print 'No file specified for upload.';
 				}
 				else{
-					print 'Unknown upload error. Please report this.</p>';
+					print 'Unknown upload error. Please report this.';
 				}
-				print '<p>Error code: ' . $uploadedFile["error"] . '</p>';
-				print '</div>';
-				header("refresh:2;url=/");
+
+				print '</p>';
+				print '<p style="font-size: 80%; color: red;">Error code: ' . $uploadedFile["error"] . '</p>';
+				include("/var/www/aleator.stream/html/inc/footer.inc");
 				exit();
 			}
 			else{
@@ -48,10 +57,10 @@
 					$check = $uploadDir . $name;
 				}
 
-				$db_location = """";
-				$db_user = """";
-				$db_passwd = '""';
-				$db_name = """";
+				$db_location = "";
+				$db_user = "";
+				$db_passwd = '';
+				$db_name = "";
 				$table = "uploads_" . $usrHash;
 
 				if($_POST['upload_name'] != null){
@@ -77,7 +86,18 @@
 					$hashedKey = password_hash($key, PASSWORD_DEFAULT);
 
 					if($key == null){
-						//indentified issue
+						$title = 'Error | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header.inc");
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red;">';
+						print "The file encryption key cannot be null.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer.inc");
 						exit();
 					}
 
@@ -90,15 +110,22 @@
 					
 					$encSuccess = move_uploaded_file($uploadedFile["tmp_name"], $tmpEncDir . $name);
 					if(!$encSuccess){ 
-						print '<div align="center">';
-						print '<p><strong>Whoops!</strong></p>';
-						print '<p>An error occured: Unable to move file for encryption. </p>';
-						print '</div>';
-						header("refresh:1;url=/");
+						$title = 'Error | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header.inc");
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red;">';
+						print "Unable to move file for encryption. Please report this.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer.inc");
 						exit();
 					}
 					else{
-						chmod($tmp_dir, 0700); //note to self, repeat this in other cases
+						chmod($tmp_dir, 0700);
 
 						$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
@@ -110,10 +137,19 @@
 
 						chmod($enc_dir, 0700);
 
-						print '<div align="center">';
-						print '<p><strong>Uploaded encrypted file. Redirecting...</strong></p>';
-						print '<p>' . 'ID: ' . $id . '</p>';
-						print '</div>';
+						$title = 'Uploaded | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header_blank.inc");
+						print '<p>';
+						print '<h2>Success!</h2>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-cog fa-spin" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: green;">';
+						print "File uploaded and encrypted!";
+						print '</p>';
+						print '<p style="font-size: 60%;">' . 'ID: ' . $id . '</p>';
+						include("/var/www/aleator.stream/html/inc/footer_blank.inc");
 						header("refresh:2;url=/uploads.php");
 						exit();
 					}	
@@ -121,11 +157,18 @@
 				else{
 					$plnSuccess = move_uploaded_file($uploadedFile["tmp_name"], $uploadDir . $name);
 					if(!$plnSuccess){ 
-						print '<div align="center">';
-						print '<p><strong>Whoops!</strong></p>';
-						print '<p>An error occured: Unable to save file. </p>';
-						print '</div>';
-						header("refresh:1;url=/");
+						$title = 'Error | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header.inc");
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red;">';
+						print "Unable to save file. Please report this.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer.inc");
 						exit();
 					}
 					else{
@@ -137,10 +180,19 @@
 
 						mysqli_query($db, $insert) or die(mysqli_error());
 
-						print '<div align="center">';
-						print '<p><strong>Uploaded unencrypted file. Redirecting...</strong></p>';
-						print '<p>' . 'ID: ' . $id . '</p>';
-						print '</div>';
+						$title = 'Uploaded | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header_blank.inc");
+						print '<p>';
+						print '<h2>Success!</h2>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-cog fa-spin" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: green;">';
+						print "File uploaded!";
+						print '</p>';
+						print '<p style="font-size: 60%;">' . 'ID: ' . $id . '</p>';
+						include("/var/www/aleator.stream/html/inc/footer_blank.inc");
 						header("refresh:2;url=/uploads.php");
 						exit();
 					}
@@ -148,11 +200,18 @@
 			}
 		}
 		else{
-			print '<div align="center">';
-			print '<p><strong>No file specified for upload!</strong></p>';
-			print '<p>You must upload a file.</p>';
-			print '</div>';
-			header("refresh:2;url=/");
+			$title = 'Error | Aleator Stream';
+			include("/var/www/aleator.stream/html/inc/header.inc");
+			print '<p>';
+			print '<strong>Error</strong>';
+			print '</p>';
+			print '<p>';
+			print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+			print '</p>';
+			print '<p style="font-size: 90%; color: red;">';
+			print "No file specified for upload.";
+			print '</p>';
+			include("/var/www/aleator.stream/html/inc/footer.inc");
 			exit();
 		}
 	}

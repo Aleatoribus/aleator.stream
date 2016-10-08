@@ -4,10 +4,10 @@
 ?>
 			
 			<?php
-				$db_location = """";
-				$db_user = """";
-				$db_passwd = '""';
-				$db_name = """";
+				$db_location = "";
+				$db_user = "";
+				$db_passwd = '';
+				$db_name = "";
 
 				if(isset($_GET['public']) && isset($_GET['dir']) && isset($_GET['note'])){
 					$dir = $_GET['dir'];
@@ -155,7 +155,6 @@
 							}
 						}
 					}
-					print '<script src="js/displayOptions.js"></script>' . "\n			";
 				}
 				else{
 					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());

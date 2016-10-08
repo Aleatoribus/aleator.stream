@@ -95,8 +95,6 @@
 			<p>
 				<i class="fa fa-key" aria-hidden="true"></i> <a href="media/public.asc">Our PGP public key.</a>
 			</p>
-
-			<script src="js/displayOptions.js"></script>
 			
 			<footer>
 				<hr>

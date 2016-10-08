@@ -8,7 +8,25 @@
 	else{
 		$username = $_SESSION['username'];
 		$usrHash = md5(strtolower($username));
-		$title = $_POST['title'];
+
+		if($_POST['title'] != null){
+			$title = $_POST['title'];
+		}
+		else{
+			print "You must provide a title.";
+			header("refresh:1;url=/");
+			exit();
+		}
+
+		if($_POST['content'] != null){
+			$content = $_POST['content'];
+		}
+		else{
+			print "You must write something.";
+			header("refresh:1;url=/");
+			exit();
+		}
+		
 		$name = md5(microtime() . $title . rand()) . ".txt";
 
 		$noteDir = "/var/www/aleator.stream/html/notes/" . $usrHash . "/" . $name;
@@ -17,10 +35,10 @@
 			$name = md5(microtime() . $title . rand()) . ".txt";
 		}
 
-		$db_location = """";
-		$db_user = """";
-		$db_passwd = '""';
-		$db_name = """";
+		$db_location = "";
+		$db_user = "";
+		$db_passwd = '';
+		$db_name = "";
 
 		if(isset($_POST['publicity'])){
 			$table = "notes"; //public notes table
@@ -39,7 +57,6 @@
 				$tmpDir = "/var/www/aleator.stream/tmp/" . $name;
 
 				$note = fopen("$tmpDir", "w") or die("Error.");
-				$content = $_POST['content'];
 				fwrite($note, $content);
 				fclose($note);
 
@@ -57,13 +74,11 @@
 		}
 		else{
 			$note = fopen("$noteDir", "w") or die("Error.");
-			$content = $_POST['content'];
 			fwrite($note, $content);
 			fclose($note);
 
 			$insert = "insert into $table values(null, '$title', '$name', '$username', 0, 'null')";
 		}
-
 		mysqli_query($db, $insert) or die(mysqli_error("Error"));
 
 		print "Done!";

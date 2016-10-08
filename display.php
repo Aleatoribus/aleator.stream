@@ -82,8 +82,23 @@
 	}
 
 	function getFiletype($undefinedContent){
-		$ext = pathinfo($undefinedContent, PATHINFO_EXTENSION);
-		$contentIndex = array("mp4"=>"video/mp4", "mkv"=>"video/mp4", "png"=>"image/png", "mp3"=>"audio/mp3", "jpg"=>"image/jpeg");
+		$ext = strtolower(pathinfo($undefinedContent, PATHINFO_EXTENSION));
+		$contentIndex = array(
+			"mp4"=>"video/mp4", 
+			"png" => "image/png", 
+			"mp3" => "audio/mp3", 
+			"jpg" => "image/jpeg", 
+			"jpeg" => "image/jpeg",
+			"gif" => "image/gif",
+			"tiff" => "image/tiff",
+			"pdf" => "application/pdf",
+			"aac" => "audio/x-aac",
+			"aif" => "audio/x-aiff",
+			"bmp" => "image/bmp",
+			"webm" => "video/webm",
+			"weba" => "audio/webm",
+			"ogv" => "video/ogg",
+			"oga" => "audio/ogg");
 		
 		if($ext == "mkv" && isChrome() == true){
 			return "video/mp4";
@@ -109,10 +124,10 @@
 		$name = $_GET['content'];
 
 		if($dir != null || $name != null){
-			$db_location = """";
-			$db_user = """";
-			$db_passwd = '""';
-			$db_name = """";
+			$db_location = "";
+			$db_user = "";
+			$db_passwd = '';
+			$db_name = "";
 			$table = "uploads_" . $dir;
 
 			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
@@ -143,24 +158,49 @@
 					$prContent = session_id() . "-" . substr($name, 0, -4);
 					$tmpContent = "/var/www/aleator.stream/tmp/" . $prContent;
 
-						if(strstr($prContent, '-', TRUE) != session_id()){
-							exit();
-						}
-						else{
-							$filetype = getFiletype($tmpContent); //maybe check if null
+						if(file_exists($tmpContent)){
+							$filetype = getFiletype($tmpContent);
 
 							displayContent($tmpContent, $filetype);
-							
-							exit();
 						}
+						else{
+							$title = 'Error | Aleator Stream';
+							include("inc/header.inc");
+							print '<p>';
+							print '<strong>Error</strong>';
+							print '</p>';
+							print '<p>';
+							print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+							print '</p>';
+							print '<p style="font-size: 90%; color: red">';
+							print "The file you requested was not found on the server. This could be a session ID mismatch.";
+							print '</p>';
+							include("inc/footer.inc");
+						}
+						exit();
 					}
 					else if($_GET['view'] == 2){ //plaintext
 						$plnContent = "/var/www/aleator.stream/uploads/" . $dir . "/" . $name;
 
-						$filetype = getFiletype($plnContent); //maybe check if null
+						if(file_exists($plnContent)){
+							$filetype = getFiletype($plnContent);
 
-						displayContent($plnContent, $filetype);
-						
+							displayContent($plnContent, $filetype);
+						}
+						else{
+							$title = 'Error | Aleator Stream';
+							include("inc/header.inc");
+							print '<p>';
+							print '<strong>Error</strong>';
+							print '</p>';
+							print '<p>';
+							print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+							print '</p>';
+							print '<p style="font-size: 90%; color: red">';
+							print "The file you requested was not found on the server.";
+							print '</p>';
+							include("inc/footer.inc");
+						}
 						exit();
 					}
 				}
@@ -236,10 +276,10 @@
 				if(isset($_POST['password']) && $_POST['password'] != null){
 					$password = $_POST['password'];
 
-					$db_location = """";
-					$db_user = """";
-					$db_passwd = '""';
-					$db_name = """";
+					$db_location = "";
+					$db_user = "";
+					$db_passwd = '';
+					$db_name = "";
 
 					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
@@ -337,10 +377,10 @@
 			$dir = $_GET['dir'];
 			$name = $_GET['content'];
 
-			$db_location = """";
-			$db_user = """";
-			$db_passwd = '""';
-			$db_name = """";
+			$db_location = "";
+			$db_user = "";
+			$db_passwd = '';
+			$db_name = "";
 			$table = "uploads_" . $dir;
 
 			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
@@ -454,6 +494,9 @@
 									else if(strstr($filetype, '/', TRUE) == "image"){
 										print "<img src='display.php?dir=$dir&content=$name&view=1' style='max-height: 100%; max-width: 100%; width: auto; height: auto;'>";
 									}
+									else if(strstr($filetype, '/', TRUE) == "application"){ //maybe check check entire string for pdf support only
+										print "<object data='display.php?dir=$dir&content=$name&view=1' width='100%' height='800'></object>";
+									}
 									else if($filetype == "error/mkv"){
 										$download = true;
 										print '<p>';
@@ -557,6 +600,9 @@
 					}
 					else if(strstr($filetype, '/', TRUE) == "image"){
 						print "<img src='display.php?dir=$dir&content=$name&view=2' style='max-height: 100%; max-width: 100%; width: auto; height: auto;'>";
+					}
+					else if(strstr($filetype, '/', TRUE) == "application"){
+						print "<object data='display.php?dir=$dir&content=$name&view=2' width='100%' height='800'></object>";
 					}
 					else if($filetype == "error/mkv"){
 						$download = true;

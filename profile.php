@@ -2,8 +2,6 @@
 	$title = 'Profile | Aleator Stream';
 	include("inc/header.inc");
 ?>
-
-	<div align="center">
 		
 		<?php
 			if(isset($_SESSION['username'])){
@@ -16,10 +14,10 @@
 					print "This page is only visible to you.";
 					print '</p>';
 
-					$db_location = """";
-					$db_user = """";
-					$db_passwd = '""';
-					$db_name = """";
+					$db_location = "";
+					$db_user = "";
+					$db_passwd = '';
+					$db_name = "";
 					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 					
 					/* Uploads */
@@ -41,10 +39,18 @@
 							if($row['encrypted'] == 1){
 								$totalEnc++;
 							}
-							
+						}
+
+						$usage = number_format($bytes / 1048576, 2);
+
+						print '<p>';
+						print "<meter align='left' value='$usage' min='0' max='2000'></meter>";
+						print '</p>';
+						if(($usage/5000)*100 > 90){
+						print '<p style="font-size: 85%; color: red;">You\'re approaching the end of your storage quota!</p>';
 						}
 						print '<p style="font-size: 85%; ">';
-						print "Disk usage: " . number_format($bytes / 1048576, 2) . ' MB';
+						print "Disk usage: " . $usage . '/2000MB';
 						print '</p>';
 						print '<p style="font-size: 85%; ">';
 						print "Number of uploads: " . $total;

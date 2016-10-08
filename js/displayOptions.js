@@ -60,3 +60,72 @@ function getFileInfo(file){
 		document.getElementById("uploadError").innerHTML = "";
 	}
 }
+
+function changeColor(item){
+	if(item.id == 1){
+		item.style.color = "#FF0000";
+	}
+	else if(item.id == 2){
+		item.style.color = "#FF7F00";
+	}
+	else if(item.id == 3){
+		item.style.color = "#FFFF00";
+	}
+	else if(item.id == 4){
+		item.style.color = "#00FF00";
+	}
+	else if(item.id == 5){
+		item.style.color = "#0000FF";
+	}
+	else if(item.id == 6){
+		item.style.color = "#4B0082";
+	}
+	else if(item.id == 7){
+		item.style.color = "#9400D3";
+	}
+	else if(item.id == 8){
+		item.style.color = "#FF7F00";
+	}
+	else if(item.id == 9){
+		item.style.color = "#FFFF00";
+	}
+	else if(item.id == 10){
+		item.style.color = "#00FF00";
+	}
+	else if(item.id == 11){
+		item.style.color = "#0000FF";
+	}
+	else if(item.id == 12){
+		item.style.color = "#4B0082";
+	}
+	else if(item.id == 13){
+		item.style.color = "#9400D3";
+	}
+}
+
+function resetColor(item){
+	item.style.color = "";
+}
+
+function unlockVisual(item){
+	item.className = "fa fa-unlock-alt";
+}
+
+function unlockVisualReset(item){
+	item.className = "fa fa-lock";
+}
+
+function logoutHover(){
+	for(let i=1; i<15; i++){
+		setTimeout( function timer(){
+			if(i > 1){
+				var resetItem = document.getElementById(i - 1);
+				resetColor(resetItem);
+			}
+			if(i < 14){
+				var item = document.getElementById(i);
+				changeColor(item);
+			}
+		}, i*25 );
+	}
+}

@@ -22,10 +22,10 @@
 				$hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
 
 
-				$db_source = """";
-				$db_user = """";
-				$db_passwd = """";
-				$db_use = """";
+				$db_source = "";
+				$db_user = "";
+				$db_passwd = "";
+				$db_use = "";
 				
 				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
 				
