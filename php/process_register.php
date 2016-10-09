@@ -18,19 +18,19 @@
 				include("/var/www/aleator.stream/html/inc/footer.inc");
 				exit();
 			}
+
+			$db_source = "";
+			$db_user = "";
+			$db_passwd = "";
+			$db_use = "";
 			
-			$username = $_POST['username'];
-			$password = $_POST['password'];
+			$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
+			
+			$username = mysqli_real_escape_string($db, $_POST['username']);
+			$password = mysqli_real_escape_string($db, $_POST['password']);
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 			
 			if($username != null && $password != null){
-				$db_source = "";
-				$db_user = "";
-				$db_passwd = "";
-				$db_use = "";
-				
-				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
-				
 				$verify = "select * from users where username='$username'";
 				$verification = mysqli_query($db, $verify) or die(mysqli_error($db));
 				

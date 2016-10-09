@@ -120,17 +120,18 @@
 	session_start();
 
 	if(isset($_GET['view'])){
-		$dir = $_GET['dir'];
-		$name = $_GET['content'];
+		$db_location = "";
+		$db_user = "";
+		$db_passwd = '';
+		$db_name = "";
+
+		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+
+		$dir = mysqli_real_escape_string($db, $_GET['dir']);
+		$name = mysqli_real_escape_string($db, $_GET['content']);
 
 		if($dir != null || $name != null){
-			$db_location = "";
-			$db_user = "";
-			$db_passwd = '';
-			$db_name = "";
 			$table = "uploads_" . $dir;
-
-			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
 			$q = "select * from $table where upload_file='$name'";
 			$results = mysqli_query($db, $q) or die(mysqli_error());
@@ -252,8 +253,15 @@
 		exit();
 	}
 	else if(isset($_GET['delete'])){
-		$dir = $_GET['dir'];
-		$name = $_GET['content'];
+		$db_location = "";
+		$db_user = "";
+		$db_passwd = '';
+		$db_name = "";
+
+		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+
+		$dir = mysqli_real_escape_string($db, $_GET['dir']);
+		$name = mysqli_real_escape_string($db, $_GET['content']);
 
 		if($dir == null || $name == null){
 			$title = 'Error | Aleator Stream';
@@ -271,17 +279,10 @@
 			exit();
 		}
 		else if(isset($_SESSION['username'])){
-			$username = $_SESSION['username'];
+			$username = mysqli_real_escape_string($db, $_SESSION['username']);
 			if(md5(strtolower($username)) == $dir){
 				if(isset($_POST['password']) && $_POST['password'] != null){
-					$password = $_POST['password'];
-
-					$db_location = "";
-					$db_user = "";
-					$db_passwd = '';
-					$db_name = "";
-
-					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+					$password = mysqli_real_escape_string($db, $_POST['password']);
 
 					$q = "select * from users where username='$username'";
 					$results = mysqli_query($db, $q) or die(mysqli_error($db));
@@ -374,16 +375,16 @@
 		$content = '/var/www/aleator.stream/uploads/' . $_GET['dir'] . '/' . $_GET['content'];
 
 		if(file_exists($content)){
-			$dir = $_GET['dir'];
-			$name = $_GET['content'];
-
 			$db_location = "";
 			$db_user = "";
 			$db_passwd = '';
 			$db_name = "";
-			$table = "uploads_" . $dir;
 
 			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+
+			$dir = mysqli_real_escape_string($db, $_GET['dir']);
+			$name = mysqli_real_escape_string($db, $_GET['content']);
+			$table = "uploads_" . $dir;
 
 			$q = "select * from $table where upload_file='$name'";
 			$results = mysqli_query($db, $q) or die(mysqli_error());

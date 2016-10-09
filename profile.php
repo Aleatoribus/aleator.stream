@@ -5,7 +5,14 @@
 		
 		<?php
 			if(isset($_SESSION['username'])){
-				$username = $_SESSION['username'];
+				$db_location = "";
+				$db_user = "";
+				$db_passwd = '';
+				$db_name = "";
+				
+				$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+
+				$username = mysqli_real_escape_string($db, $_SESSION['username']);
 				$usrHash = md5(strtolower($username));
 
 				if(!isset($_GET['config'])){				
@@ -13,12 +20,6 @@
 					print '<p style="font-size: 80%; ">';
 					print "This page is only visible to you.";
 					print '</p>';
-
-					$db_location = "";
-					$db_user = "";
-					$db_passwd = '';
-					$db_name = "";
-					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 					
 					/* Uploads */
 

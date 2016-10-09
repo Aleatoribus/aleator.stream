@@ -9,9 +9,11 @@
 				$db_passwd = '';
 				$db_name = "";
 
+				$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+
 				if(isset($_GET['public']) && isset($_GET['dir']) && isset($_GET['note'])){
-					$dir = $_GET['dir'];
-					$note = $_GET['note'];
+					$dir = mysqli_real_escape_string($db, $_GET['dir']);
+					$note = mysqli_real_escape_string($db, $_GET['note']);
 					$isPublic = $_GET['public'];
 					$noteDir = "/var/www/aleator.stream/html/notes/" . $dir . "/" . $note;
 
@@ -22,8 +24,6 @@
 						$table = "notes_" . $dir;
 					}
 					
-					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
-
 					$q = "select * from $table where note_dir='$note'";
 					$results = mysqli_query($db, $q) or die(mysqli_error($db));
 					
@@ -66,7 +66,7 @@
 					print "<a href='notes/" . md5(strtolower($row['uploader'])) . "/" . $row['note_dir'] . "' download>" . "Download" . "</a>";
 					
 					if(isset($_SESSION['username'])){
-						$username = $_SESSION['username'];
+						$username = mysqli_real_escape_string($db, $_SESSION['username']);
 						$usrHash = md5(strtolower($username));
 
 						if($dir == $usrHash){
@@ -83,15 +83,21 @@
 											$hashed_password = $row['password'];
 
 											if(password_verify($password, $hashed_password)){
-												//delete note
-												shell_exec("rm -f $noteDir");
+												if(file_exists("$noteDir")){
+													//delete note
+													shell_exec("rm -f $noteDir");
 
-												//remove from table
-												$deleteNote = "delete from $table where note_dir='$note'";
-												mysqli_query($db, $deleteNote) or die(mysqli_error($db));
+													//remove from table
+													$deleteNote = "delete from $table where note_dir='$note'";
+													mysqli_query($db, $deleteNote) or die(mysqli_error($db));
 
-												header("Location:/notes.php");
-												exit();
+													header("Location:/notes.php");
+													exit();
+												}
+												else{
+													//insert error message
+													exit();
+												}
 											}
 											else{
 												header("Location:/notes.php?error=delete");
@@ -160,7 +166,7 @@
 					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
 					if(isset($_SESSION['username'])){
-						$username = $_SESSION['username'];
+						mysqli_real_escape_string($db, $username = $_SESSION['username']);
 						$usrHash = md5(strtolower($username));
 
 						print '<h2>Your notes</h2>' . "\n			\n			";

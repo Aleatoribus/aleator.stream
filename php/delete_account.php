@@ -16,15 +16,15 @@
 				exit();
 			}
 			else{
-				$username = $_SESSION['username'];
-				$password = $_POST['password'];
-
 				$db_source = "";
 				$db_user = "";
 				$db_passwd = "";
 				$db_use = "";
 				
 				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
+
+				$username = mysqli_real_escape_string($db, $_SESSION['username']);
+				$password = mysqli_real_escape_string($db, $_POST['password']);
 				
 				$q = "select * from users where username='$username'";
 				$results = mysqli_query($db, $q) or die(mysqli_error($db));

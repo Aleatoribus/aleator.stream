@@ -3,17 +3,17 @@
 	session_start();
 	if(!isset($_SESSION['username'])){
 		if(isset($_POST['username']) && isset($_POST['password'])){
-		$username = $_POST['username'];
-		$password = $_POST['password'];
+			$db_source = "";
+			$db_user = "";
+			$db_passwd = "";
+			$db_use = "";
+			
+			$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
+
+			$username = mysqli_real_escape_string($db, $_POST['username']);
+			$password = mysqli_real_escape_string($db, $_POST['password']);
 	
 			if($username != null && $password != null){
-				$db_source = "";
-				$db_user = "";
-				$db_passwd = "";
-				$db_use = "";
-				
-				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
-				
 				$q = "select * from users where username='$username'";
 				$results = mysqli_query($db, $q) or die(mysqli_error($db));
 				

@@ -6,11 +6,18 @@
 		exit();
 	}
 	else{
-		$username = $_SESSION['username'];
+		$db_location = "";
+		$db_user = "";
+		$db_passwd = '';
+		$db_name = "";
+
+		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+
+		$username = mysqli_real_escape_string($db, $_SESSION['username']);
 		$usrHash = md5(strtolower($username));
 
 		if($_POST['title'] != null){
-			$title = $_POST['title'];
+			$title = mysqli_real_escape_string($db, $_POST['title']);
 		}
 		else{
 			print "You must provide a title.";
@@ -35,11 +42,6 @@
 			$name = md5(microtime() . $title . rand()) . ".txt";
 		}
 
-		$db_location = "";
-		$db_user = "";
-		$db_passwd = '';
-		$db_name = "";
-
 		if(isset($_POST['publicity'])){
 			$table = "notes"; //public notes table
 		}
@@ -47,12 +49,10 @@
 			$table = "notes_" . $usrHash; //private notes table
 		}
 
-		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
-
 		if(isset($_POST['encryption'])){
 			if($_POST['key'] != null && $_POST['cipher'] != null){
-				$key = $_POST['key'];
-				$cipher = $_POST['cipher'];
+				$key = mysqli_real_escape_string($db, $_POST['key']);
+				$cipher = mysqli_real_escape_string($db, $_POST['cipher']);
 
 				$tmpDir = "/var/www/aleator.stream/tmp/" . $name;
 

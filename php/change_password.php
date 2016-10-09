@@ -16,19 +16,18 @@
 				exit();
 			}
 			else{
-				$username = $_SESSION['username'];
-				$current_password = $_POST['current_password'];
-				$new_password = $_POST['new_password'];
-				$hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
-
-
 				$db_source = "";
 				$db_user = "";
 				$db_passwd = "";
 				$db_use = "";
 				
 				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
-				
+
+				$username = mysqli_real_escape_string($db, $_SESSION['username']);
+				$current_password = mysqli_real_escape_string($db, $_POST['current_password']);
+				$new_password = mysqli_real_escape_string($db, $_POST['new_password']);
+				$hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
+
 				$q = "select * from users where username='$username'";
 				$results = mysqli_query($db, $q) or die(mysqli_error($db));
 

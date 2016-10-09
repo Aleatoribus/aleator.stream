@@ -6,7 +6,14 @@
 		exit();
 	}
 	else{
-		$username = $_SESSION['username'];
+		$db_location = "";
+		$db_user = "";
+		$db_passwd = '';
+		$db_name = "";
+
+		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+
+		$username = mysqli_real_escape_string($db, $_SESSION['username']);
 		$usrHash = md5(strtolower($username));
 
 		$uploadDir = "/var/www/aleator.stream/uploads/" . $usrHash . "/";
@@ -57,14 +64,10 @@
 					$check = $uploadDir . $name;
 				}
 
-				$db_location = "";
-				$db_user = "";
-				$db_passwd = '';
-				$db_name = "";
 				$table = "uploads_" . $usrHash;
 
 				if($_POST['upload_name'] != null){
-					$upload_name = $_POST['upload_name'];
+					$upload_name = mysqli_real_escape_string($db, $_POST['upload_name']);
 				}
 				else{
 					$upload_name = "Untitled";
@@ -81,8 +84,8 @@
 					$tmp_dir = $tmpEncDir . $name;
 					$enc_dir = $uploadDir . $name . ".enc";
 					$enc_name = $name . ".enc";
-					$cipher = $_POST['cipher'];
-					$key = $_POST['key'];
+					$cipher = mysqli_real_escape_string($db, $_POST['cipher']);
+					$key = mysqli_real_escape_string($db, $_POST['key']);
 					$hashedKey = password_hash($key, PASSWORD_DEFAULT);
 
 					if($key == null){
@@ -126,8 +129,6 @@
 					}
 					else{
 						chmod($tmp_dir, 0700);
-
-						$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
 						$insert = "insert into $table values(null, '$upload_name', '$enc_name', $shared, 1, '$cipher', '$allowOnlineDecryption', '$hashedKey')";
 
@@ -174,7 +175,7 @@
 					else{
 						chmod($uploadDir . $name, 0700);
 
-						$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+						//$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
 						$insert = "insert into $table values(null, '$upload_name', '$name', $shared, 0, 'null', 0, 'null')";
 

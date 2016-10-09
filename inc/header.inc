@@ -7,8 +7,6 @@
 		<link rel="stylesheet" type="text/css" href="/css/style.css"/>
 		<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Ubuntu:regular,bold&subset=Latin"/>
 		<script src="js/displayOptions.js"></script>
-		<!-- <link rel="stylesheet" href="simple/css/normalize.css">
-  		<link rel="stylesheet" href="simple/css/skeleton.css"> -->
 		<script src="https://use.fontawesome.com/646b36f2aa.js"></script>
 	</head>
 	<body>
