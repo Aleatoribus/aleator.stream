@@ -2,7 +2,23 @@
 	include("inc/security.inc");
 	session_start();
 	if(!isset($_SESSION['username'])){
-		if(isset($_POST['username']) && isset($_POST['password'])){
+		if(isset($_POST['username']) && isset($_POST['password']) && isset($_POST['password_verify'])){
+			if($_POST['password'] != $_POST['password_verify']){
+				$title = 'Error | Aleator Stream';
+				include("/var/www/aleator.stream/html/inc/header.inc");
+				print '<p>';
+				print '<strong>Error</strong>';
+				print '</p>';
+				print '<p>';
+				print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+				print '</p>';
+				print '<p style="font-size: 90%; color: red">';
+				print "Passwords do not match.";
+				print '</p>';
+				include("/var/www/aleator.stream/html/inc/footer.inc");
+				exit();
+			}
+			
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
@@ -19,19 +35,52 @@
 				$verification = mysqli_query($db, $verify) or die(mysqli_error($db));
 				
 				if(mysqli_num_rows($verification) > 0){
-					header("Location:/register.php?error=1");
+					$title = 'Error | Aleator Stream';
+					include("/var/www/aleator.stream/html/inc/header.inc");
+					print '<p>';
+					print '<strong>Error</strong>';
+					print '</p>';
+					print '<p>';
+					print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+					print '</p>';
+					print '<p style="font-size: 90%; color: red">';
+					print "An account with that username already exists.";
+					print '</p>';
+					include("/var/www/aleator.stream/html/inc/footer.inc");
 					exit();
 				}
 				else{
 					$usrHash = md5(strtolower($username));
 
 					if(!mkdir("/var/www/aleator.stream/uploads/$usrHash", 0700)){
-						print "Error: Failed to create user uploads directory. Please report this.";
+						$title = 'Error | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header.inc");
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red">';
+						print "Failed to create user uploads directory. Please report this.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer.inc");
 						exit();
 					}
 					else{
 						if(!mkdir("/var/www/aleator.stream/html/notes/$usrHash", 0755)){
-							print "Error: Failed to create user notes directory. Please report this.";
+							$title = 'Error | Aleator Stream';
+							include("/var/www/aleator.stream/html/inc/header.inc");
+							print '<p>';
+							print '<strong>Error</strong>';
+							print '</p>';
+							print '<p>';
+							print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+							print '</p>';
+							print '<p style="font-size: 90%; color: red">';
+							print "Failed to create user notes directory. Please report this.";
+							print '</p>';
+							include("/var/www/aleator.stream/html/inc/footer.inc");
 							exit();
 						}
 						else{
@@ -69,7 +118,18 @@
 				}
 			}
 			else{
-				header("Location:/register.php?error=0");
+				$title = 'Error | Aleator Stream';
+				include("/var/www/aleator.stream/html/inc/header.inc");
+				print '<p>';
+				print '<strong>Error</strong>';
+				print '</p>';
+				print '<p>';
+				print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+				print '</p>';
+				print '<p style="font-size: 90%; color: red">';
+				print "Username and/or password cannot be null.";
+				print '</p>';
+				include("/var/www/aleator.stream/html/inc/footer.inc");
 				exit();
 			}
 		}
@@ -79,8 +139,18 @@
 		}
 	}
 	else{
-		print "You cannot register an account when you already have one!";
-		header("refresh:2;url=/");
+		$title = 'Error | Aleator Stream';
+		include("/var/www/aleator.stream/html/inc/header.inc");
+		print '<p>';
+		print '<strong>Error</strong>';
+		print '</p>';
+		print '<p>';
+		print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+		print '</p>';
+		print '<p style="font-size: 90%; color: red">';
+		print "Please log out of your current account before creating a new one.";
+		print '</p>';
+		include("/var/www/aleator.stream/html/inc/footer.inc");
 		exit();
 	}
 ?>

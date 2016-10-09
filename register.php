@@ -26,11 +26,12 @@
 			print "\n			";
 			print '</p>';
 			print "\n			";
-			print '<p>';
+			print '<p style="font-size: 85%;">';
 			print "\n				";
-			print 'Password: <input type="password" name="password"/>';
+			print 'Password: <input type="password" name="password"/> ';
+			print "\n				";
+			print 'Password (repeat): <input type="password" name="password_verify"/>';
 			print '</p>';
-			print "\n			";
 			print '<input type="submit" value="Register" name="submit"/>';
 			print "\n		";
 			print '</form>';
