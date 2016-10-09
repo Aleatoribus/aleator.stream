@@ -34,7 +34,7 @@
 				print '<p style="font-size: 90%; color: red;">';
 
 				if($uploadedFile["error"] == 1 || $uploadedFile["error"] == 2){
-					print 'File is larger than the server limit of 300MB.';
+					print 'File is larger than the server limit of 500MB.';
 				}
 				else if($uploadedFile["error"] == 3){
 					print 'File was only partially uploaded.';
@@ -134,7 +134,11 @@
 
 						mysqli_query($db, $insert) or die(mysqli_error());
 
-						shell_exec("openssl $cipher -a -salt -in $tmp_dir -out $enc_dir -pass pass:$key && rm -f $tmp_dir");
+						$escapedCipher = escapeshellcmd($cipher);
+						$escapedTmpDir = escapeshellcmd($tmp_dir);
+						$escapedEncDir = escapeshellcmd($enc_dir);
+						$escapedKey = escapeshellcmd($key);
+						shell_exec("openssl $escapedCipher -a -salt -in $escapedTmpDir -out $escapedEncDir -pass pass:$escapedKey && rm -f $escapedTmpDir");
 
 						chmod($enc_dir, 0700);
 
@@ -174,8 +178,6 @@
 					}
 					else{
 						chmod($uploadDir . $name, 0700);
-
-						//$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
 						$insert = "insert into $table values(null, '$upload_name', '$name', $shared, 0, 'null', 0, 'null')";
 

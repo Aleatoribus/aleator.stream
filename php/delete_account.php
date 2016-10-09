@@ -41,10 +41,12 @@
 						$notesTable = "notes_" . $usrHash;
 
 						/* Delete uploads directory */
-						shell_exec("rm -rf $uploadsDir");
+						$escapedUploadsDir = escapeshellcmd($uploadsDir);
+						shell_exec("rm -rf $escapedUploadsDir");
 
 						/* Delete notes directory */
-						shell_exec("rm -rf $notesDir");
+						$escapedNotesDir = escapeshellcmd($notesDir);
+						shell_exec("rm -rf $escapedNotesDir");
 
 						/* Delete MySQL tables */
 						$deleteUploadsTable = "drop table $uploadsTable";

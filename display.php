@@ -297,7 +297,8 @@
 							$table = "uploads_" . md5(strtolower($username));
 
 							//delete file
-							shell_exec("rm -f $fileDir");
+							$escapedFileDir = escapeshellcmd($fileDir);
+							shell_exec("rm -f $escapedFileDir");
 
 							//remove from table
 							$deleteFile = "delete from $table where upload_file='$name'";
@@ -467,7 +468,11 @@
 								if(password_verify($key, $hashedKey)){
 									$tmpContent = "/var/www/aleator.stream/tmp/" . session_id() . "-" . substr($name, 0, -4);
 
-									shell_exec("openssl $cipher -d -a -in $content -out $tmpContent -pass pass:$key");
+									$escapedCipher = escapeshellcmd($cipher);
+									$escapedContent = escapeshellcmd($content);
+									$escapedTmpConent = escapeshellcmd($tmpContent);
+									$escapedKey = escapeshellcmd($key);
+									shell_exec("openssl $escapedCipher -d -a -in $escapedContent -out $escapedTmpConent -pass pass:$escapedKey");
 
 									$filetype = getFiletype($tmpContent);
 

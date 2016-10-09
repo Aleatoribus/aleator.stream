@@ -85,7 +85,8 @@
 											if(password_verify($password, $hashed_password)){
 												if(file_exists("$noteDir")){
 													//delete note
-													shell_exec("rm -f $noteDir");
+													$escapedNoteDir = escapeshellcmd($noteDir);
+													shell_exec("rm -f $escapedNoteDir");
 
 													//remove from table
 													$deleteNote = "delete from $table where note_dir='$note'";
@@ -151,9 +152,13 @@
 
 								$tmpDir = "/var/www/aleator.stream/tmp/" . $note;
 
-								shell_exec("openssl $cipher -d -a -in $noteDir -out $tmpDir -pass pass:$key");
+								$escapedCipher = escapeshellcmd($cipher);
+								$escapedNoteDir = escapeshellcmd($noteDir);
+								$escapedTmpDir = escapeshellcmd($tmpDir);
+								$escapedKey = escapeshellcmd($key);
+								shell_exec("openssl $escapedCipher -d -a -in $escapedNoteDir -out $escapedTmpDir -pass pass:$escapedKey");
 
-								$output = shell_exec("cat $tmpDir && rm -f $tmpDir");
+								$output = shell_exec("cat $escapedTmpDir && rm -f $escapedTmpDir");
 
 								print "<p>" . "\n				";
 								print "<pre>$output</pre>" . "\n			";

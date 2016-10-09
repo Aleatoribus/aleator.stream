@@ -60,11 +60,15 @@
 				fwrite($note, $content);
 				fclose($note);
 
-				shell_exec("openssl $cipher -a -salt -in $tmpDir -out $noteDir -pass pass:$key && rm -f $tmpDir");
+				$escapedCipher = escapeshellcmd($cipher);
+				$escapedKey = escapeshellcmd($key);
+				$escapedTmpDir = escapeshellcmd($tmpDir);
+				$escapedNoteDir = escapeshellcmd($noteDir);
+				shell_exec("openssl $escapedCipher -a -salt -in $escapedTmpDir -out $escapedNoteDir -pass pass:$escapedKey && rm -f $escapedTmpDir");
 
 				$insert = "insert into $table values(null, '$title', '$name', '$username', 1, '$cipher')";
 
-				//chmod($uploadDir . $enc_name, 0644);
+				chmod($noteDir, 0644);
 			}
 			else{
 				print "Key and/or cipher cannot be null.";
