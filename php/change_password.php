@@ -49,10 +49,10 @@
 				exit();
 			}
 			else{
-				$db_source = "127.0.0.1:3306";
-				$db_user = "root";
-				$db_passwd = "Rmit1234";
-				$db_use = "aleatoribus";
+				$db_source = "";
+				$db_user = "";
+				$db_passwd = "";
+				$db_use = "";
 
 				$username = $_SESSION['username'];
 				$current_password = $_POST['current_password'];
