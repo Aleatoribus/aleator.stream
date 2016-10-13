@@ -1,57 +1,125 @@
 <?php
-	include("inc/security.inc");
+	include("/var/www/aleator.stream/html/inc/security.inc");
 	session_start();
 	if(!isset($_SESSION['username'])){
-		header("Location:/");
+		$title = 'Error | Aleator Stream';
+		include("/var/www/aleator.stream/html/inc/header.inc");
+		print '<p>';
+		print '<strong>Error</strong>';
+		print '</p>';
+		print '<p>';
+		print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+		print '</p>';
+		print '<p style="font-size: 90%; color: red">';
+		print "You must be logged in to view this page.";
+		print '</p>';
+		include("/var/www/aleator.stream/html/inc/footer.inc");
 		exit();
 	}
 	else{
 		if(!isset($_POST['current_password']) || !isset($_POST['new_password'])){
-			header("Location:/");
+			$title = 'Error | Aleator Stream';
+			include("/var/www/aleator.stream/html/inc/header.inc");
+			print '<p>';
+			print '<strong>Error</strong>';
+			print '</p>';
+			print '<p>';
+			print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+			print '</p>';
+			print '<p style="font-size: 90%; color: red">';
+			print "Password/s missing from request.";
+			print '</p>';
+			include("/var/www/aleator.stream/html/inc/footer.inc");
 			exit();
 		}
 		else{
 			if($_POST['current_password'] == null || $_POST['new_password'] == null){
-				header("Location:/profile.php?config=password&error=0");
+				$title = 'Error | Aleator Stream';
+				include("/var/www/aleator.stream/html/inc/header.inc");
+				print '<p>';
+				print '<strong>Error</strong>';
+				print '</p>';
+				print '<p>';
+				print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+				print '</p>';
+				print '<p style="font-size: 90%; color: red">';
+				print "Your password cannot be null.";
+				print '</p>';
+				include("/var/www/aleator.stream/html/inc/footer.inc");
 				exit();
 			}
 			else{
-				$db_source = "";
-				$db_user = "";
-				$db_passwd = "";
-				$db_use = "";
-				
-				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
+				$db_source = "127.0.0.1:3306";
+				$db_user = "root";
+				$db_passwd = "Rmit1234";
+				$db_use = "aleatoribus";
 
-				$username = mysqli_real_escape_string($db, $_SESSION['username']);
-				$current_password = mysqli_real_escape_string($db, $_POST['current_password']);
-				$new_password = mysqli_real_escape_string($db, $_POST['new_password']);
+				$username = $_SESSION['username'];
+				$current_password = $_POST['current_password'];
+				$new_password = $_POST['new_password'];
 				$hashed_new_password = password_hash($new_password, PASSWORD_DEFAULT);
 
-				$q = "select * from users where username='$username'";
-				$results = mysqli_query($db, $q) or die(mysqli_error($db));
+				$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);
 
-				if(mysqli_num_rows($results) == 1){
-					$row = mysqli_fetch_array($results);
+				$verification = $db->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
+				$verification->bind_param("s", $username);
+				$verification->execute();
+				$result = $verification->get_result();
+
+				if($result->num_rows == 1){
+					$row = $result->fetch_array();
 					$hashed_current_password = $row['password'];
 
 					if(password_verify($current_password, $hashed_current_password)){
-						$update = "update users set password='$hashed_new_password' where username='$username' and password='$hashed_current_password'";
-						mysqli_query($db, $update) or die(mysqli_error($db));
+						$update = $db->prepare("UPDATE users SET password = ? where username = ? and password = ?");
+						$update->bind_param("sss", $hashed_new_password, $username, $hashed_current_password);
+						$update->execute();
 
-						print "Password changed!";
-
+						$title = 'Success | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header_blank.inc");
+						print '<p>';
+						print '<h2>Success!</h2>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-cog fa-spin" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: green;">';
+						print "Password changed.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer_blank.inc");
 						session_destroy();
 						header("refresh:1;url=/?register=2");
 						exit();
 					}
 					else{
-						header("Location:/profile.php?config=password&error=1");
+						$title = 'Error | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header.inc");
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red">';
+						print "Invalid current password.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer.inc");
 						exit();
 					}
 				}
 				else{
-					header("Location:/profile.php?config=password&error=1");
+					$title = 'Error | Aleator Stream';
+					include("/var/www/aleator.stream/html/inc/header.inc");
+					print '<p>';
+					print '<strong>Error</strong>';
+					print '</p>';
+					print '<p>';
+					print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+					print '</p>';
+					print '<p style="font-size: 90%; color: red">';
+					print "User verification error. Please report this.";
+					print '</p>';
+					include("/var/www/aleator.stream/html/inc/footer.inc");
 					exit();
 				}
 			}

@@ -15,7 +15,7 @@
 				<strong>
 				<?php
 					$i = 1;
-					$contributors = array("Aaron", "Samuel", "Zac", "Vanja", "Phu");
+					$contributors = array("Aaron", "Samuel", "Vanja", "Phu");
 					shuffle($contributors);
 					foreach ($contributors as $contributor){
 						if($i > 1){
@@ -61,13 +61,6 @@
 					<img src="media/vanja.png" alt="Vanja." width="20%" height="20%"/>
 					<p style="font-size: 85%;">
 						Vanja is a first year Bachelor degree student.
-					</p>
-				</div>
-
-				<div id="Zac" style="display: none;">
-					<img src="media/zac.png" alt="Zac." width="20%" height="20%"/>
-					<p style="font-size: 85%;">
-						Zac is a first year Bachelor degree student.
 					</p>
 				</div>
 			</p>

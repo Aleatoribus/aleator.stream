@@ -5,8 +5,8 @@
 	}
 
 	header("strict-transport-security: max-age=31536000; includeSubDomains; preload");
-	header("Content-Security-Policy: default-src 'self'; font-src 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://use.fontawesome.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://use.fontawesome.com; script-src 'self' 'unsafe-inline' https://use.fontawesome.com");
-	header("X-Content-Security-Policy: default-src 'self'; font-src 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://use.fontawesome.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://use.fontawesome.com; script-src 'self' 'unsafe-inline' https://use.fontawesome.com");
+	header("Content-Security-Policy: default-src 'self'; font-src 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://use.fontawesome.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://use.fontawesome.com; script-src 'self' 'unsafe-inline' https://use.fontawesome.com; frame-src https://www.youtube-nocookie.com");
+	header("X-Content-Security-Policy: default-src 'self'; font-src 'unsafe-inline' https://fonts.googleapis.com https://fonts.gstatic.com https://use.fontawesome.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://use.fontawesome.com; script-src 'self' 'unsafe-inline' https://use.fontawesome.com; frame-src https://www.youtube-nocookie.com");
 	header('X-Frame-Options: SAMEORIGIN');
 	header('X-XSS-Protection: 1; mode=block');
 	header('X-Content-Type-Options: nosniff');

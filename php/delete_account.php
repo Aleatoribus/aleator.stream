@@ -1,13 +1,35 @@
 <?php
-	include("inc/security.inc");
+	include("/var/www/aleator.stream/html/inc/security.inc");
 	session_start();
 	if(!isset($_SESSION['username'])){
-		header("Location:/");
+		$title = 'Error | Aleator Stream';
+		include("/var/www/aleator.stream/html/inc/header.inc");
+		print '<p>';
+		print '<strong>Error</strong>';
+		print '</p>';
+		print '<p>';
+		print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+		print '</p>';
+		print '<p style="font-size: 90%; color: red">';
+		print "You must be logged in to view this page.";
+		print '</p>';
+		include("/var/www/aleator.stream/html/inc/footer.inc");
 		exit();
 	}
 	else{
 		if(!isset($_POST['password'])){
-			header("Location:/");
+			$title = 'Error | Aleator Stream';
+			include("/var/www/aleator.stream/html/inc/header.inc");
+			print '<p>';
+			print '<strong>Error</strong>';
+			print '</p>';
+			print '<p>';
+			print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+			print '</p>';
+			print '<p style="font-size: 90%; color: red">';
+			print "You must be logged in to view this page.";
+			print '</p>';
+			include("/var/www/aleator.stream/html/inc/footer.inc");
 			exit();
 		}
 		else{
@@ -16,21 +38,22 @@
 				exit();
 			}
 			else{
-				$db_source = "";
-				$db_user = "";
-				$db_passwd = "";
-				$db_use = "";
-				
-				$db = mysqli_connect($db_source, $db_user, $db_passwd, $db_use) or die(mysqli_error());
+				$db_source = "127.0.0.1:3306";
+				$db_user = "root";
+				$db_passwd = "Rmit1234";
+				$db_use = "aleatoribus";
 
-				$username = mysqli_real_escape_string($db, $_SESSION['username']);
-				$password = mysqli_real_escape_string($db, $_POST['password']);
-				
-				$q = "select * from users where username='$username'";
-				$results = mysqli_query($db, $q) or die(mysqli_error($db));
+				$username = $_SESSION['username'];
+				$password = $_POST['password'];
 
-				if(mysqli_num_rows($results) == 1){
-					$row = mysqli_fetch_array($results);
+				$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);
+				$verification = $db->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
+				$verification->bind_param("s", $username);
+				$verification->execute();
+				$result = $verification->get_result();
+
+				if($result->num_rows == 1){
+					$row = $result->fetch_array();
 					$hashed_password = $row['password'];
 
 					if(password_verify($password, $hashed_password)){
@@ -50,32 +73,65 @@
 
 						/* Delete MySQL tables */
 						$deleteUploadsTable = "drop table $uploadsTable";
-						mysqli_query($db, $deleteUploadsTable) or die(mysqli_error($db));
+						mysqli_query($db, $deleteUploadsTable) or die(mysqli_error());
 
 						$deleteNotesTable = "drop table $notesTable";
-						mysqli_query($db, $deleteNotesTable) or die(mysqli_error($db));
+						mysqli_query($db, $deleteNotesTable) or die(mysqli_error());
 
 						/* Delete public notes from table */
-						$deletePublicNotes = "delete from notes where uploader='$username'";
-						mysqli_query($db, $deletePublicNotes) or die(mysqli_error($db));
+						$deletePublicNotes = $db->prepare("DELETE FROM notes WHERE uploader = ?");
+						$deletePublicNotes->bind_param("s", $username);
+						$deletePublicNotes->execute();
 
 						/* Delete user */
-						$deleteUser = "delete from users where username='$username'";
-						mysqli_query($db, $deleteUser) or die(mysqli_error($db));
+						$deleteUser = $db->prepare("DELETE FROM users WHERE username = ?");
+						$deleteUser->bind_param("s", $username);
+						$deleteUser->execute();
 
-						print "Account deleted. Goodbye!";
-
+						$title = 'Goodbye | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header.inc");
+						print '<p>';
+						print '<strong>Goodbye</strong>';
+						print '</p>';
+						print '<p>';
+						print '<iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/q27u5YvgEdU?rel=0&amp;showinfo=0" frameborder="0" allowfullscreen></iframe>';
+						print '</p>';
+						print '<p style="font-size: 90%">';
+						print "Account deleted! Goodbye.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer.inc");
 						session_destroy();
-						header("refresh:1;url=/");
 						exit();
 					}
 					else{
-						header("Location:/profile.php?config=account&error=1");
+						$title = 'Error | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header.inc");
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red">';
+						print "Invalid user password.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer.inc");
 						exit();
 					}
 				}
 				else{
-					header("Location:/profile.php?config=account&error=1");
+					$title = 'Error | Aleator Stream';
+					include("/var/www/aleator.stream/html/inc/header.inc");
+					print '<p>';
+					print '<strong>Error</strong>';
+					print '</p>';
+					print '<p>';
+					print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+					print '</p>';
+					print '<p style="font-size: 90%; color: red">';
+					print "User verification error. Please report this.";
+					print '</p>';
+					include("/var/www/aleator.stream/html/inc/footer.inc");
 					exit();
 				}
 			}

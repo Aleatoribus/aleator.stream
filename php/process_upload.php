@@ -1,21 +1,31 @@
 <?php
-	include("inc/security.inc");
+	include("/var/www/aleator.stream/html/inc/security.inc");
 	session_start();
 	if(!isset($_SESSION['username'])){
-		header("Location:/");
+		$title = 'Error | Aleator Stream';
+		include("/var/www/aleator.stream/html/inc/header.inc");
+		print '<p>';
+		print '<strong>Error</strong>';
+		print '</p>';
+		print '<p>';
+		print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+		print '</p>';
+		print '<p style="font-size: 90%; color: red">';
+		print "You are not logged in. You must be logged in to upload content.";
+		print '</p>';
+		include("/var/www/aleator.stream/html/inc/footer.inc");
 		exit();
 	}
 	else{
-		$db_location = "";
-		$db_user = "";
-		$db_passwd = '';
-		$db_name = "";
+		$db_source = "127.0.0.1:3306";
+		$db_user = "root";
+		$db_passwd = "Rmit1234";
+		$db_use = "aleatoribus";
 
-		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+		$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);
 
-		$username = mysqli_real_escape_string($db, $_SESSION['username']);
+		$username = $_SESSION['username'];
 		$usrHash = md5(strtolower($username));
-
 		$uploadDir = "/var/www/aleator.stream/uploads/" . $usrHash . "/";
 		$tmpEncDir = "/var/www/aleator.stream/tmp/";
 
@@ -67,7 +77,7 @@
 				$table = "uploads_" . $usrHash;
 
 				if($_POST['upload_name'] != null){
-					$upload_name = mysqli_real_escape_string($db, $_POST['upload_name']);
+					$upload_name = $_POST['upload_name'];
 				}
 				else{
 					$upload_name = "Untitled";
@@ -84,8 +94,8 @@
 					$tmp_dir = $tmpEncDir . $name;
 					$enc_dir = $uploadDir . $name . ".enc";
 					$enc_name = $name . ".enc";
-					$cipher = mysqli_real_escape_string($db, $_POST['cipher']);
-					$key = mysqli_real_escape_string($db, $_POST['key']);
+					$cipher = $_POST['cipher'];
+					$key = $_POST['key'];
 					$hashedKey = password_hash($key, PASSWORD_DEFAULT);
 
 					if($key == null){
@@ -130,9 +140,9 @@
 					else{
 						chmod($tmp_dir, 0700);
 
-						$insert = "insert into $table values(null, '$upload_name', '$enc_name', $shared, 1, '$cipher', '$allowOnlineDecryption', '$hashedKey')";
-
-						mysqli_query($db, $insert) or die(mysqli_error());
+						$insert = $db->prepare("INSERT INTO $table VALUES(null, ?, ?, ?, 1, ?, ?, ?)");
+						$insert->bind_param("ssssss", $upload_name, $enc_name, $shared, $cipher, $allowOnlineDecryption, $hashedKey);
+						$insert->execute();
 
 						$escapedCipher = escapeshellcmd($cipher);
 						$escapedTmpDir = escapeshellcmd($tmp_dir);
@@ -179,9 +189,9 @@
 					else{
 						chmod($uploadDir . $name, 0700);
 
-						$insert = "insert into $table values(null, '$upload_name', '$name', $shared, 0, 'null', 0, 'null')";
-
-						mysqli_query($db, $insert) or die(mysqli_error());
+						$insertpln = $db->prepare("INSERT INTO $table VALUES(null, ?, ?, ?, 0, null, 1, null)");
+						$insertpln->bind_param("sss", $upload_name, $name, $shared);
+						$insertpln->execute();
 
 						$title = 'Uploaded | Aleator Stream';
 						include("/var/www/aleator.stream/html/inc/header_blank.inc");

@@ -120,10 +120,10 @@
 	session_start();
 
 	if(isset($_GET['view'])){
-		$db_location = "";
-		$db_user = "";
-		$db_passwd = '';
-		$db_name = "";
+		$db_location = "127.0.0.1:3306";
+		$db_user = "root";
+		$db_passwd = 'Rmit1234';
+		$db_name = "aleatoribus";
 
 		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
@@ -253,10 +253,10 @@
 		exit();
 	}
 	else if(isset($_GET['delete'])){
-		$db_location = "";
-		$db_user = "";
-		$db_passwd = '';
-		$db_name = "";
+		$db_location = "127.0.0.1:3306";
+		$db_user = "root";
+		$db_passwd = 'Rmit1234';
+		$db_name = "aleatoribus";
 
 		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 
@@ -376,10 +376,10 @@
 		$content = '/var/www/aleator.stream/uploads/' . $_GET['dir'] . '/' . $_GET['content'];
 
 		if(file_exists($content)){
-			$db_location = "";
-			$db_user = "";
-			$db_passwd = '';
-			$db_name = "";
+			$db_location = "127.0.0.1:3306";
+			$db_user = "root";
+			$db_passwd = 'Rmit1234';
+			$db_name = "aleatoribus";
 
 			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
 

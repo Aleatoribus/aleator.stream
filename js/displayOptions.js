@@ -33,7 +33,6 @@ function displayContributor(contributor){
 	var divSamuel = document.getElementById('Samuel');
 	var divPhu = document.getElementById('Phu');
 	var divVanja = document.getElementById('Vanja');
-	var divZac = document.getElementById('Zac');
 	var divContent = document.getElementById(contributor);
 
 	divDefault.style.display = 'none';
@@ -41,7 +40,6 @@ function displayContributor(contributor){
 	divSamuel.style.display = 'none';
 	divPhu.style.display = 'none';
 	divVanja.style.display = 'none';
-	divZac.style.display = 'none';
 
 	divContent.style.display = 'block';	
 }

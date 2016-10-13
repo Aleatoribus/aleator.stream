@@ -1,36 +1,67 @@
 <?php
-	include("inc/security.inc");
+	include("/var/www/aleator.stream/html/inc/security.inc");
 	session_start();
 	if(!isset($_SESSION['username'])){
-		header("Location:/");
+		$title = 'Error | Aleator Stream';
+		include("/var/www/aleator.stream/html/inc/header.inc");
+		print '<p>';
+		print '<strong>Error</strong>';
+		print '</p>';
+		print '<p>';
+		print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+		print '</p>';
+		print '<p style="font-size: 90%; color: red">';
+		print "You are not logged in. You must be logged in to process a note.";
+		print '</p>';
+		include("/var/www/aleator.stream/html/inc/footer.inc");
 		exit();
 	}
 	else{
-		$db_location = "";
-		$db_user = "";
-		$db_passwd = '';
-		$db_name = "";
+		$db_source = "127.0.0.1:3306";
+		$db_user = "root";
+		$db_passwd = "Rmit1234";
+		$db_use = "aleatoribus";
 
-		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+		$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);
 
-		$username = mysqli_real_escape_string($db, $_SESSION['username']);
+		$username = $_SESSION['username'];
 		$usrHash = md5(strtolower($username));
 
 		if($_POST['title'] != null){
-			$title = mysqli_real_escape_string($db, $_POST['title']);
+			$title = filter_var($_POST['title'], FILTER_SANITIZE_STRING);
 		}
 		else{
-			print "You must provide a title.";
-			header("refresh:1;url=/");
+			$title = 'Error | Aleator Stream';
+			include("/var/www/aleator.stream/html/inc/header.inc");
+			print '<p>';
+			print '<strong>Error</strong>';
+			print '</p>';
+			print '<p>';
+			print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+			print '</p>';
+			print '<p style="font-size: 90%; color: red">';
+			print "You must provide a title with your note.";
+			print '</p>';
+			include("/var/www/aleator.stream/html/inc/footer.inc");
 			exit();
 		}
 
 		if($_POST['content'] != null){
-			$content = $_POST['content'];
+			$content = filter_var($_POST['content'], FILTER_SANITIZE_STRING);
 		}
 		else{
-			print "You must write something.";
-			header("refresh:1;url=/");
+			$title = 'Error | Aleator Stream';
+			include("/var/www/aleator.stream/html/inc/header.inc");
+			print '<p>';
+			print '<strong>Error</strong>';
+			print '</p>';
+			print '<p>';
+			print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+			print '</p>';
+			print '<p style="font-size: 90%; color: red">';
+			print "Empty note. Please write something.";
+			print '</p>';
+			include("/var/www/aleator.stream/html/inc/footer.inc");
 			exit();
 		}
 		
@@ -43,20 +74,20 @@
 		}
 
 		if(isset($_POST['publicity'])){
-			$table = "notes"; //public notes table
+			$table = "notes";
 		}
 		else{
-			$table = "notes_" . $usrHash; //private notes table
+			$table = "notes_" . $usrHash;
 		}
 
 		if(isset($_POST['encryption'])){
 			if($_POST['key'] != null && $_POST['cipher'] != null){
-				$key = mysqli_real_escape_string($db, $_POST['key']);
-				$cipher = mysqli_real_escape_string($db, $_POST['cipher']);
+				$key = $_POST['key'];
+				$cipher = $_POST['cipher'];
 
 				$tmpDir = "/var/www/aleator.stream/tmp/" . $name;
 
-				$note = fopen("$tmpDir", "w") or die("Error.");
+				$note = fopen("$tmpDir", "w") or die("Error writing note to file.");
 				fwrite($note, $content);
 				fclose($note);
 
@@ -66,27 +97,50 @@
 				$escapedNoteDir = escapeshellcmd($noteDir);
 				shell_exec("openssl $escapedCipher -a -salt -in $escapedTmpDir -out $escapedNoteDir -pass pass:$escapedKey && rm -f $escapedTmpDir");
 
-				$insert = "insert into $table values(null, '$title', '$name', '$username', 1, '$cipher')";
-
-				chmod($noteDir, 0644);
+				$insert = $db->prepare("INSERT INTO $table VALUES(null, ?, ?, ?, 1, ?)");
+				$insert->bind_param("ssss", $title, $name, $username, $cipher);
 			}
 			else{
+				$title = 'Error | Aleator Stream';
+				include("/var/www/aleator.stream/html/inc/header.inc");
+				print '<p>';
+				print '<strong>Error</strong>';
+				print '</p>';
+				print '<p>';
+				print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+				print '</p>';
+				print '<p style="font-size: 90%; color: red">';
 				print "Key and/or cipher cannot be null.";
-				header("refresh:1;url=/");
+				print '</p>';
+				include("/var/www/aleator.stream/html/inc/footer.inc");
 				exit();
 			}
 		}
 		else{
-			$note = fopen("$noteDir", "w") or die("Error.");
+			$note = fopen("$noteDir", "w") or die("Error writing note to file.");
 			fwrite($note, $content);
 			fclose($note);
 
-			$insert = "insert into $table values(null, '$title', '$name', '$username', 0, 'null')";
+			$insert = $db->prepare("INSERT INTO $table VALUES(null, ?, ?, ?, 0, null)");
+			$insert->bind_param("sss", $title, $name, $username);
 		}
-		mysqli_query($db, $insert) or die(mysqli_error("Error"));
+		chmod($noteDir, 0644);
 
-		print "Done!";
-		header("refresh:1;url=/notes.php");
+		$insert->execute();
+
+		$title = 'Published | Aleator Stream';
+		include("/var/www/aleator.stream/html/inc/header_blank.inc");
+		print '<p>';
+		print '<h2>Success!</h2>';
+		print '</p>';
+		print '<p>';
+		print '<i class="fa fa-cog fa-spin" aria-hidden="true" style="font-size: 1000%;"></i>';
+		print '</p>';
+		print '<p style="font-size: 90%; color: green;">';
+		print "Note published!";
+		print '</p>';
+		include("/var/www/aleator.stream/html/inc/footer_blank.inc");
+		header("refresh:2;url=/notes.php");
 		exit();
 	}
 ?>
