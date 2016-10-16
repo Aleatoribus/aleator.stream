@@ -89,11 +89,6 @@
 				<i class="fa fa-key" aria-hidden="true"></i> <a href="media/public.asc">Our PGP public key.</a>
 			</p>
 			
-			<footer>
-				<hr>
-				Aleatoribus is an <a href="https://github.com/Aleatoribus">open source</a> project licensed under version 2.0 of the Apache Licence.
-			</footer>
-		</div>
-
-	</body>
-</html>
+			<?php
+				include("inc/footer.inc");
+			?>

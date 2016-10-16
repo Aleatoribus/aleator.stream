@@ -29,6 +29,22 @@
 			$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 			
 			if($username != null && $password != null){
+				if($username != strip_tags($username)){
+					$title = 'Error | Aleator Stream';
+					include("/var/www/aleator.stream/html/inc/header.inc");
+					print '<p>';
+					print '<strong>Error</strong>';
+					print '</p>';
+					print '<p>';
+					print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+					print '</p>';
+					print '<p style="font-size: 90%; color: red">';
+					print "Requested username contains HTML tags. Please remove them to create an account.";
+					print '</p>';
+					include("/var/www/aleator.stream/html/inc/footer.inc");
+					exit();
+				}
+
 				$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);
 
 				$verification = $db->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");

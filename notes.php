@@ -4,31 +4,49 @@
 ?>
 			
 			<?php
-				$db_location = "";
+				$db_source = "";
 				$db_user = "";
 				$db_passwd = '';
-				$db_name = "";
+				$db_use = "";
 
-				$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+				$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);
 
 				if(isset($_GET['public']) && isset($_GET['dir']) && isset($_GET['note'])){
-					$dir = mysqli_real_escape_string($db, $_GET['dir']);
-					$note = mysqli_real_escape_string($db, $_GET['note']);
+					$dir = $_GET['dir'];
+					$note = $_GET['note'];
 					$isPublic = $_GET['public'];
 					$noteDir = "/var/www/aleator.stream/html/notes/" . $dir . "/" . $note;
 
-					if($isPublic == 1){
-						$table = "notes";
+					/* Check if $dir is a valid MD5. */
+					if(preg_match('/^[a-f0-9]{32}$/', $dir)){
+						if($isPublic == 1){
+							$table = "notes";
+						}
+						else{
+							$table = "notes_" . $dir;
+						}
 					}
 					else{
-						$table = "notes_" . $dir;
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red">';
+						print "Invalid directory format.";
+						print '</p>';
+						include("inc/footer.inc");
+						exit();
 					}
-					
-					$q = "select * from $table where note_dir='$note'";
-					$results = mysqli_query($db, $q) or die(mysqli_error($db));
-					
-					if(mysqli_num_rows($results) == 1){
-						$row = mysqli_fetch_array($results);
+
+					$get_note = $db->prepare("SELECT * FROM $table WHERE note_dir = ?");
+					$get_note->bind_param("s", $note);
+					$get_note->execute();
+					$result = $get_note->get_result();
+
+					if($result->num_rows == 1){
+						$row = $result->fetch_array();
 						print '<p>' . "\n				";
 						print '<strong>' . "\n					";
 						if($row['encrypted'] == 1){
@@ -40,7 +58,16 @@
 						print '</p>' . "\n			";
 					}
 					else{
-						header("Location:/"); //error
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red">';
+						print "Note not found in database.";
+						print '</p>';
+						include("inc/footer.inc");
 						exit();
 					}
 
@@ -56,7 +83,17 @@
 						fclose($file);
 					}
 					else{
-						print "404 - Requested note not found on server.";
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red">';
+						print "Note not found on server.";
+						print '</p>';
+						include("inc/footer.inc");
+						exit();
 					}
 
 					print '</code>' . "\n			\n			";
@@ -66,7 +103,7 @@
 					print "<a href='notes/" . md5(strtolower($row['uploader'])) . "/" . $row['note_dir'] . "' download>" . "Download" . "</a>";
 					
 					if(isset($_SESSION['username'])){
-						$username = mysqli_real_escape_string($db, $_SESSION['username']);
+						$username = $_SESSION['username'];
 						$usrHash = md5(strtolower($username));
 
 						if($dir == $usrHash){
@@ -75,11 +112,13 @@
 									if($_POST['password'] != null){
 										$password = $_POST['password'];
 
-										$q = "select * from users where username='$username'";
-										$results = mysqli_query($db, $q) or die(mysqli_error($db));
+										$verification = $db->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
+										$verification->bind_param("s", $username);
+										$verification->execute();
+										$result = $verification->get_result();
 
-										if(mysqli_num_rows($results) == 1){
-											$row = mysqli_fetch_array($results);
+										if($result->num_rows == 1){
+											$row = $result->fetch_array();
 											$hashed_password = $row['password'];
 
 											if(password_verify($password, $hashed_password)){
@@ -89,28 +128,78 @@
 													shell_exec("rm -f $escapedNoteDir");
 
 													//remove from table
-													$deleteNote = "delete from $table where note_dir='$note'";
-													mysqli_query($db, $deleteNote) or die(mysqli_error($db));
+													$delete_note = $db->prepare("DELETE FROM $table WHERE note_dir = ?");
+													$delete_note->bind_param("s", $note);
+													$delete_note->execute();
 
 													header("Location:/notes.php");
 													exit();
 												}
 												else{
-													//insert error message
+													print '<p>';
+													print '<strong>Error</strong>';
+													print '</p>';
+													print '<p>';
+													print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+													print '</p>';
+													print '<p style="font-size: 90%; color: red">';
+													print "Note not found on server.";
+													print '</p>';
+													include("inc/footer.inc");
 													exit();
 												}
 											}
 											else{
-												header("Location:/notes.php?error=delete");
+												print '<p>';
+												print '<strong>Error</strong>';
+												print '</p>';
+												print '<p>';
+												print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+												print '</p>';
+												print '<p style="font-size: 90%; color: red">';
+												print "Invalid user password.";
+												print '</p>';
+												include("inc/footer.inc");
 												exit();
 											}
 										}
 										else{
-											header("Location:/notes.php?error=delete");
+											print '<p>';
+											print '<strong>Error</strong>';
+											print '</p>';
+											print '<p>';
+											print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+											print '</p>';
+											print '<p style="font-size: 90%; color: red">';
+											print "Note not found in database.";
+											print '</p>';
+											include("inc/footer.inc");
 											exit();
 										}
 									}
-									header("Location:/notes.php?error=delete");
+									print '<p>';
+									print '<strong>Error</strong>';
+									print '</p>';
+									print '<p>';
+									print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+									print '</p>';
+									print '<p style="font-size: 90%; color: red">';
+									print "User password cannot be null.";
+									print '</p>';
+									include("inc/footer.inc");
+									exit();
+								}
+								else{
+									print '<p>';
+									print '<strong>Error</strong>';
+									print '</p>';
+									print '<p>';
+									print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+									print '</p>';
+									print '<p style="font-size: 90%; color: red">';
+									print "User password missing from this deletion request.";
+									print '</p>';
+									include("inc/footer.inc");
 									exit();
 								}
 							}
@@ -168,28 +257,20 @@
 					}
 				}
 				else{
-					$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
-
 					if(isset($_SESSION['username'])){
-						mysqli_real_escape_string($db, $username = $_SESSION['username']);
+						$username = $_SESSION['username'];
 						$usrHash = md5(strtolower($username));
 
 						print '<h2>Your notes</h2>' . "\n			\n			";
-
-						if(isset($_GET['error'])){
-							$error = $_GET['error'];
-							if($error == "delete"){
-								print '<p style="font-size: 85%; color: red;">Failed to delete note. Incorrect user password.</p>';
-							}
-						}
-
 						print '<strong>Public</strong>' . "\n			\n			";
-						
-						$qPersonalPublic = "select * from notes where uploader='$username'";
-						$rPersonalPublic = mysqli_query($db, $qPersonalPublic) or die(mysqli_error());
-						
-						if(mysqli_num_rows($rPersonalPublic) > 0){
-							while($row = mysqli_fetch_array($rPersonalPublic)){
+
+						$get_personal_public_notes = $db->prepare("SELECT * FROM notes WHERE uploader = ?");
+						$get_personal_public_notes->bind_param("s", $username);
+						$get_personal_public_notes->execute();
+						$result_personal_public = $get_personal_public_notes->get_result();
+
+						if($result_personal_public->num_rows > 0){
+							while($row = $result_personal_public->fetch_array()){
 								print "<p>" . "\n				";
 								print "<a href='notes.php?public=1&dir=" . md5(strtolower($row['uploader'])) . "&note=" . $row['note_dir'] . "'>" . $row['title'] . "</a>" . "\n			";
 								print "</p>" . "\n			\n			";
@@ -201,12 +282,13 @@
 
 						print '<strong>Private</strong>' . "\n			\n			";
 
-						$tPersonalPrivate = "notes_" . $usrHash;
-						$qPersonalPrivate = "select * from $tPersonalPrivate";
-						$rPersonalPrivate = mysqli_query($db, $qPersonalPrivate) or die(mysqli_error());
+						$personal_private_table = "notes_" . $usrHash;
+						$get_personal_private_notes = $db->prepare("SELECT * FROM $personal_private_table");
+						$get_personal_private_notes->execute();
+						$result_personal_private = $get_personal_private_notes->get_result();
 
-						if(mysqli_num_rows($rPersonalPrivate) > 0){
-							while($row = mysqli_fetch_array($rPersonalPrivate)){
+						if($result_personal_private->num_rows > 0){
+							while($row = $result_personal_private->fetch_array()){
 								print "<p>" . "\n				";
 								print "<a href='notes.php?public=0&dir=" . md5(strtolower($row['uploader'])) . "&note=" . $row['note_dir'] . "'>" . $row['title'] . "</a>" . "\n			";
 								print "</p>" . "\n			\n			";
@@ -220,11 +302,13 @@
 
 					print '<h2>Public notes</h2>' . "\n			\n			";
 
-					$qPublic = "select * from notes";
-					$rPublic = mysqli_query($db, $qPublic) or die(mysqli_error());
+					$get_public_notes = $db->prepare("SELECT * FROM notes");
+					$get_public_notes->execute();
+					$result_public = $get_public_notes->get_result();
+
 					
-					if(mysqli_num_rows($rPublic) > 0){
-						while($row = mysqli_fetch_array($rPublic)){
+					if($result_public->num_rows > 0){
+						while($row = $result_public->fetch_array()){
 							print "<p>" . "\n				";
 							print "<a href='notes.php?public=1&dir=" . md5(strtolower($row['uploader'])) . "&note=" . $row['note_dir'] . "'>" . $row['title'] . "</a>" . "\n			";
 							print "</p>" . "\n			";
@@ -234,12 +318,8 @@
 						print '<p style="font-size: 85%;">There are no public notes on the server.</p>';
 					}
 				}
+				include("inc/footer.inc");
 			?>
-
-			<footer>
-				<hr>
-				Aleatoribus is an <a href="https://github.com/Aleatoribus">open source</a> project licensed under version 2.0 of the Apache Licence.
-			</footer>
 
 			</div>
 

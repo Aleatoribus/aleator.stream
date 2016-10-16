@@ -119,25 +119,33 @@
 	include("inc/security.inc");
 	session_start();
 
+	$db_source = "";
+	$db_user = "";
+	$db_passwd = "";
+	$db_use = "";
+
+	$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);
+
 	if(isset($_GET['view'])){
-		$db_location = "";
-		$db_user = "";
-		$db_passwd = '';
-		$db_name = "";
-
-		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
-
-		$dir = mysqli_real_escape_string($db, $_GET['dir']);
-		$name = mysqli_real_escape_string($db, $_GET['content']);
+		$dir = $_GET['dir'];
+		$name = $_GET['content'];
 
 		if($dir != null || $name != null){
-			$table = "uploads_" . $dir;
+			/* Check if $dir is a valid MD5. */
+			if(preg_match('/^[a-f0-9]{32}$/', $dir)){
+				$table = "uploads_" . $dir;
+			}
+			else{
+				exit("Invalid directory!");
+			}
 
-			$q = "select * from $table where upload_file='$name'";
-			$results = mysqli_query($db, $q) or die(mysqli_error());
+			$file_verification = $db->prepare("SELECT * FROM $table WHERE upload_file = ? LIMIT 1");
+			$file_verification->bind_param("s", $name);
+			$file_verification->execute();
+			$result = $file_verification->get_result();
 
-			if(mysqli_num_rows($results) == 1){
-				$row = mysqli_fetch_array($results);
+			if($result->num_rows == 1){
+				$row = $result->fetch_array();
 
 				if($row['shared'] == 1){
 					$allowAccess = 1;
@@ -253,15 +261,8 @@
 		exit();
 	}
 	else if(isset($_GET['delete'])){
-		$db_location = "";
-		$db_user = "";
-		$db_passwd = '';
-		$db_name = "";
-
-		$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
-
-		$dir = mysqli_real_escape_string($db, $_GET['dir']);
-		$name = mysqli_real_escape_string($db, $_GET['content']);
+		$dir = $_GET['dir'];
+		$name = $_GET['content'];
 
 		if($dir == null || $name == null){
 			$title = 'Error | Aleator Stream';
@@ -279,16 +280,18 @@
 			exit();
 		}
 		else if(isset($_SESSION['username'])){
-			$username = mysqli_real_escape_string($db, $_SESSION['username']);
+			$username = $_SESSION['username'];
 			if(md5(strtolower($username)) == $dir){
 				if(isset($_POST['password']) && $_POST['password'] != null){
-					$password = mysqli_real_escape_string($db, $_POST['password']);
+					$password = $_POST['password'];
 
-					$q = "select * from users where username='$username'";
-					$results = mysqli_query($db, $q) or die(mysqli_error($db));
+					$user_verification = $db->prepare("SELECT * FROM users WHERE username = ? LIMIT 1");
+					$user_verification->bind_param("s", $username);
+					$user_verification->execute();
+					$result = $user_verification->get_result();
 
-					if(mysqli_num_rows($results) == 1){
-						$row = mysqli_fetch_array($results);
+					if($result->num_rows == 1){
+						$row = $result->fetch_array();
 						$hashed_password = $row['password'];
 
 						if(password_verify($password, $hashed_password)){
@@ -301,8 +304,9 @@
 							shell_exec("rm -f $escapedFileDir");
 
 							//remove from table
-							$deleteFile = "delete from $table where upload_file='$name'";
-							mysqli_query($db, $deleteFile) or die(mysqli_error($db));
+							$delete_file = $db->prepare("DELETE FROM $table WHERE upload_file = ?");
+							$delete_file->bind_param("s", $name);
+							$delete_file->execute();
 
 							header("Location:/uploads.php");
 							exit();
@@ -376,22 +380,23 @@
 		$content = '/var/www/aleator.stream/uploads/' . $_GET['dir'] . '/' . $_GET['content'];
 
 		if(file_exists($content)){
-			$db_location = "";
-			$db_user = "";
-			$db_passwd = '';
-			$db_name = "";
+			$dir = $_GET['dir'];
+			$name = $_GET['content'];
+			/* Check if $dir is a valid MD5. */
+			if(preg_match('/^[a-f0-9]{32}$/', $dir)){
+				$table = "uploads_" . $dir;
+			}
+			else{
+				exit("Invalid directory!");
+			}
 
-			$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+			$file_verification = $db->prepare("SELECT * FROM $table WHERE upload_file = ? LIMIT 1");
+			$file_verification->bind_param("s", $name);
+			$file_verification->execute();
+			$result = $file_verification->get_result();
 
-			$dir = mysqli_real_escape_string($db, $_GET['dir']);
-			$name = mysqli_real_escape_string($db, $_GET['content']);
-			$table = "uploads_" . $dir;
-
-			$q = "select * from $table where upload_file='$name'";
-			$results = mysqli_query($db, $q) or die(mysqli_error());
-
-			if(mysqli_num_rows($results) == 1){
-				$row = mysqli_fetch_array($results);
+			if($result->num_rows == 1){
+				$row = $result->fetch_array();
 
 				if($row['shared'] == 1){
 					$allowAccess = 1;
@@ -453,7 +458,7 @@
 							print '<p>';
 							print "<form action='display.php?dir=$dir&content=$name' method='post' enctype='multipart/form-data'>";
 							print 'Key: <input type="password" name="key"/>';
-							print '<input type="submit" value="Decrypt"> ' . '<span style="font-size: 70%;"> (' . strtoupper($cipher) . ')</span>';
+							print ' <input type="submit" value="Decrypt"> ' . '<span style="font-size: 70%;"> (' . strtoupper($cipher) . ')</span>';
 							print '</form>';
 							print '</p>';
 

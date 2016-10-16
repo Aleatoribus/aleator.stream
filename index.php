@@ -7,10 +7,13 @@
 			<?php 
 				print "Hi ";
 				if(isset($_SESSION['username'])){
-					echo ucfirst($_SESSION['username']);
+					print ucfirst($_SESSION['username']);
+				}
+				else if(strstr(strtolower($_SERVER['HTTP_USER_AGENT']), "googlebot")){
+					print "Googlebot";
 				}
 				else{
-					echo $_SERVER['REMOTE_ADDR'];
+					print $_SERVER['REMOTE_ADDR'];
 				}
 				print "! Aleator Stream is in alpha development." . "\n";
 			?>
@@ -29,20 +32,20 @@
 				print '<strong>Upload a file</strong>' . "\n		";
 				print '</p>' . "\n		\n		";
 
-				//Check if usage exceeds quota
-
-				$db_location = "";
+				/* Check if usage exceeds quota */
+				$db_source = "";
 				$db_user = "";
-				$db_passwd = '';
-				$db_name = "";
+				$db_passwd = "";
+				$db_use = "";
 				$table = "uploads_" . $usrHash;
 
-				$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());
+				$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);
 
-				$qUploads = "select * from $table";
-				$rUploads = mysqli_query($db, $qUploads) or die(mysqli_error());
+				$get_uploads = $db->prepare("SELECT * FROM $table");
+				$get_uploads->execute();
+				$result = $get_uploads->get_result();
 
-				while($row = mysqli_fetch_array($rUploads)){
+				while($row = $result->fetch_array()){
 					$bytes =  $bytes + filesize($uploadDir . $row['upload_file']);
 				}
 
@@ -74,8 +77,7 @@
 					print '<option value="aes-128-cbc">AES-128-CBC</option>' . "\n							";
 					print '<option value="camellia-256-cbc">Camellia-256-CBC</option>' . "\n							";
 					print '<option value="camellia-192-cbc">Camellia-192-CBC</option>' . "\n							";
-					print '<option value="camellia-128-cbc">Camellia-128-CBC</option>' . "\n							";
-					print '<option value="bf-cbc">BF-CBC</option>' . "\n						";
+					print '<option value="camellia-128-cbc">Camellia-128-CBC</option>' . "\n						";
 					print '</select>' . "\n					";
 					print '</p>' . "\n					";
 					print '<p>' . "\n						";
@@ -87,6 +89,9 @@
 					print '</form>' . "\n		";
 					print '</p>' . "\n		\n		";
 					print '<p id="uploadError" style="font-size: 80%; color: red;"></p>' . "\n		\n		";
+					print '<p style="font-size: 60%;">';
+					print '<i class="fa fa-gavel" aria-hidden="true"></i> By using Aleator Stream you agree to our <a href="/terms.php">terms</a>.';
+					print '</p>';
 					print '<p id="upload-data" style="font-size: 85%;">' . "\n			";
 					print '<a href="/uploads.php">My uploads</a>. Max filesize: ' . ini_get('upload_max_filesize') . "B\n		";
 					print '</p>' . "\n		\n		";
@@ -120,14 +125,16 @@
 				print '<option value="aes-128-cbc">AES-128-CBC</option>' . "\n							";
 				print '<option value="camellia-256-cbc">Camellia-256-CBC</option>' . "\n							";
 				print '<option value="camellia-192-cbc">Camellia-192-CBC</option>' . "\n							";
-				print '<option value="camellia-128-cbc">Camellia-128-CBC</option>' . "\n							";
-				print '<option value="bf-cbc">BF-CBC</option>' . "\n						";
+				print '<option value="camellia-128-cbc">Camellia-128-CBC</option>' . "\n						";
 				print '</select>' . "\n					";
 				print '</p>' . "\n				";
 				print '</div>' . "\n				";
  				print '<input type="submit" value="Publish">' . "\n			";
 				print '</form>' . "\n		";
 				print '</p>' . "\n		";
+				print '<p style="font-size: 60%;">';
+				print '<i class="fa fa-gavel" aria-hidden="true"></i> By using Aleator Stream you agree to our <a href="/terms.php">terms</a>.';
+				print '</p>';
 			}
 			else{
 				print '<p>' . "\n			";
@@ -192,8 +199,5 @@
 		</p>
 
 		<?php
-			/*if(isset($_SESSION['username'])){
-				print '<script src="js/displayOptions.js"></script>' . "\n		\n		";
-			}*/
 			include("inc/footer.inc");
 		?>

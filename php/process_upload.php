@@ -77,7 +77,7 @@
 				$table = "uploads_" . $usrHash;
 
 				if($_POST['upload_name'] != null){
-					$upload_name = $_POST['upload_name'];
+					$upload_name =  filter_var($_POST['upload_name'], FILTER_SANITIZE_STRING);
 				}
 				else{
 					$upload_name = "Untitled";
@@ -94,11 +94,32 @@
 					$tmp_dir = $tmpEncDir . $name;
 					$enc_dir = $uploadDir . $name . ".enc";
 					$enc_name = $name . ".enc";
-					$cipher = $_POST['cipher'];
-					$key = $_POST['key'];
-					$hashedKey = password_hash($key, PASSWORD_DEFAULT);
 
-					if($key == null){
+					$supported_ciphers = array("aes-256-cbc", "aes-192-cbc", "aes-128-cbc", "camellia-256-cbc", "camellia-192-cbc", "camellia-128-cbc");
+					if(in_array($_POST['cipher'], $supported_ciphers)){
+						$cipher = $_POST['cipher'];
+					}
+					else{
+						$title = 'Error | Aleator Stream';
+						include("/var/www/aleator.stream/html/inc/header.inc");
+						print '<p>';
+						print '<strong>Error</strong>';
+						print '</p>';
+						print '<p>';
+						print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+						print '</p>';
+						print '<p style="font-size: 90%; color: red;">';
+						print "Unsupported cipher specified.";
+						print '</p>';
+						include("/var/www/aleator.stream/html/inc/footer.inc");
+						exit();
+					}
+
+					if($_POST['key'] != null){
+						$key = $_POST['key'];
+						$hashedKey = password_hash($key, PASSWORD_DEFAULT);
+					}
+					else{
 						$title = 'Error | Aleator Stream';
 						include("/var/www/aleator.stream/html/inc/header.inc");
 						print '<p>';
