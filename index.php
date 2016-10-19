@@ -19,7 +19,7 @@
 			?>
 		</h2>
 
-		<p style="font-size: 80%;">New! - <a href="http://z54pzh3e2qg4phj5.onion">z54pzh3e2qg4phj5.onion</a> on TOR.</p>
+		<p style="font-size: 80%;">New! - <a href="http://z54pzh3e2qg4phj5.onion">z54pzh3e2qg4phj5.onion</a> on TOR &bull; <a href="/canary.asc">Warrant canary</a>.</p>
 
 		<hr>
 		
@@ -62,14 +62,14 @@
 					print '<form action="php/process_upload.php" method="post" enctype="multipart/form-data">' . "\n				";
 					print 'Title: <input type="text" name="upload_name"/>' . "\n				";
 					print '<p style="font-size: 85%;">' . "\n					";
-					print '<input type="checkbox" name="share" value="shared"> Make shareable.' . "\n				";
+					print '<input type="checkbox" name="share" value="shared"> Make shareable. <i class="fa fa-info-circle" aria-hidden="true" title="A shareable file can be accessed by others using its link."></i>' . "\n				";
 					print '</p>' . "\n				";
 					print '<p style="font-size: 85%;">' . "\n					";
-					print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayUploadOptions(this)"> Use encryption.' . "\n				";
+					print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayUploadOptions(this)"> Use encryption. <i class="fa fa-info-circle" aria-hidden="true" title="Encryption protects a file from unauthorised viewers."></i>' . "\n				";
 					print '</p>' . "\n				";
 					print '<div id="uploadEncryptionOptions" style="display:none;font-size: 85%;">' . "\n					";
 					print '<p>' . "\n						";
-					print '<i class="fa fa-key" aria-hidden="true"></i> Key: <input type="password" name="key"/>' . "\n						";
+					print '<i class="fa fa-key" aria-hidden="true" title="This is a password you later use to decrypt the file."></i> Key: <input type="password" name="key"/>' . "\n						";
 					print 'Cipher: ' . "\n						";
 					print '<select name="cipher">' . "\n							";
 					print '<option value="aes-256-cbc">AES-256-CBC</option>' . "\n							";
@@ -80,9 +80,6 @@
 					print '<option value="camellia-128-cbc">Camellia-128-CBC</option>' . "\n						";
 					print '</select>' . "\n					";
 					print '</p>' . "\n					";
-					print '<p>' . "\n						";
-					print '<input type="checkbox" name="decryption" value="disallow" disabled> Disallow server-side decryption' . "\n					";
-					print '</p>' . "\n				";
 					print '</div>' . "\n				";
 	 				print '<input type="file" name="uploadedFile" onchange="getFileInfo(this)">' . "\n				";
 	 				print '<input type="submit" id="upload" value="Upload">' . "\n			";
@@ -110,14 +107,14 @@
 				print '<textarea rows="8" cols="75" name="content"></textarea>' . "\n				";
 				print '</p>' . "\n				";
 				print '<p style="font-size: 85%;">' . "\n					";
-				print '<input type="checkbox" name="publicity" value="public"> Publish this note publically.' . "\n				";
+				print '<input type="checkbox" name="publicity" value="public"> Make public. <i class="fa fa-info-circle" aria-hidden="true" title="Public notes are displayed on the Notes page for anyone to see."></i>' . "\n				";
 				print '</p>' . "\n				";
 				print '<p style="font-size: 85%;">' . "\n					";
-				print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayNoteOptions(this)"> Use encryption.' . "\n				";
+				print '<input type="checkbox" name="encryption" value="encrypt" onclick="displayNoteOptions(this)"> Use encryption. <i class="fa fa-info-circle" aria-hidden="true" title="Encryption protects a file from unauthorised viewers."></i>' . "\n				";
 				print '</p>' . "\n				";
-				print '<div id="noteEncryptionOptions" style="display:none;font-size: 85%;">' . "\n					";
+				print '<div id="noteEncryptionOptions" style="display:none; font-size: 85%;">' . "\n					";
 				print '<p>' . "\n						";
-				print '<i class="fa fa-key" aria-hidden="true"></i> Key: <input type="password" name="key"/>' . "\n						";
+				print '<i class="fa fa-key" aria-hidden="true" title="This is a password you later use to decrypt the file."></i> Key: <input type="password" name="key"/>' . "\n						";
 				print 'Cipher: ' . "\n						";
 				print '<select name="cipher">' . "\n							";
 				print '<option value="aes-256-cbc">AES-256-CBC</option>' . "\n							";

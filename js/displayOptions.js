@@ -113,6 +113,14 @@ function unlockVisualReset(item){
 	item.className = "fa fa-lock";
 }
 
+function openVisual(item){
+	item.className = "fa fa-folder-open";
+}
+
+function openVisualReset(item){
+	item.className = "fa fa-folder";
+}
+
 function logoutHover(){
 	for(let i=1; i<15; i++){
 		setTimeout( function timer(){

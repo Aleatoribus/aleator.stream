@@ -10,10 +10,10 @@
 
 	if(isset($_GET['access'])){
 		$access = $_GET['access'];
-		if($access == "" || $access == ""){
+		if($access == "" || $access == "" || $access == ""){
 			print '<p>';
 			print "\n			";
-			print '<strong>Register a test account</strong>';
+			print '<strong>Register an account</strong>';
 			print "\n		";
 			print '</p>';
 			print "\n		";

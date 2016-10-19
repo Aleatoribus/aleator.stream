@@ -31,7 +31,7 @@
 							<a href="/notes.php">Notes</a>
 						</li>
 						<?php
-							include("inc/security.inc");
+							include("/var/www/aleator.stream/html/inc/security.inc");
 							@session_start();
 							if(isset($_SESSION['username'])){
 								print '<li class="profile" style="font-size: 85%">';
@@ -50,7 +50,7 @@
 							else{
 								print '<li class="register" style="font-size: 85%">';
 								print "\n						";
-								print '<a href="/register.php">Register</a>';
+								print '<a href="/register.php?access=demo">Register</a>';
 								print "\n					";
 								print '</li>';
 								print "\n";

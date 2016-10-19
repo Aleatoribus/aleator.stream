@@ -89,6 +89,6 @@
 				<i class="fa fa-key" aria-hidden="true"></i> <a href="media/public.asc">Our PGP public key.</a>
 			</p>
 			
-			<?php
-				include("inc/footer.inc");
-			?>
+<?php
+	include("inc/footer.inc");
+?>
