@@ -1,8 +1,8 @@
 # Aleator Stream
 
-This is the respository for the public version of the Aleator Stream website. 
+Aleator Stream is an attempt at cloud file storage and sharing with user-managed encryption that uses keys determined solely by the user on a per-upload basis.
 
-This is a project for Building IT Systems at RMIT University.
+This is a project for Building IT Systems at RMIT University in Semester Two of 2016.
 
 ##License
 
