@@ -1,5 +1,6 @@
 <?php
 	function displayContent($file, $type){
+		/* https://github.com/tuxxin/MP4Streaming/blob/master/streamer.php */
 		if(file_exists($file)){
 			$fp = @fopen($file, 'rb');
 			$size = filesize($file);
@@ -84,7 +85,7 @@
 	function getFiletype($undefinedContent){
 		$ext = strtolower(pathinfo($undefinedContent, PATHINFO_EXTENSION));
 		$contentIndex = array(
-			"mp4"=>"video/mp4", 
+			"mp4" => "video/mp4", 
 			"png" => "image/png", 
 			"mp3" => "audio/mp3", 
 			"jpg" => "image/jpeg", 
@@ -164,8 +165,8 @@
 
 				if($allowAccess == 1){
 					if($_GET['view'] == 1){ //encrypted
-					$prContent = session_id() . "-" . substr($name, 0, -4);
-					$tmpContent = "/var/www/aleator.stream/tmp/" . $prContent;
+						$prContent = session_id() . "-" . substr($name, 0, -4);
+						$tmpContent = "/var/www/aleator.stream/tmp/" . $prContent;
 
 						if(file_exists($tmpContent)){
 							$filetype = getFiletype($tmpContent);
@@ -229,6 +230,21 @@
 					exit();
 				}
 			}
+			else{
+				$title = 'Error | Aleator Stream';
+				include("inc/header.inc");
+				print '<p>';
+				print '<strong>Error</strong>';
+				print '</p>';
+				print '<p>';
+				print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+				print '</p>';
+				print '<p style="font-size: 90%; color: red">';
+				print "Content not found in database.";
+				print '</p>';
+				include("inc/footer.inc");
+				exit();
+			}
 		}
 		exit();
 	}
@@ -237,24 +253,114 @@
 		$name = $_GET['content'];
 
 		if($dir != null || $name != null){
-			if($_GET['download'] == 1){ //encrypted
-				$prContent = session_id() . "-" . substr($name, 0, -4);
-				$tmpContent = "/var/www/aleator.stream/tmp/" . $prContent;
+			/* Check if $dir is a valid MD5. */
+			if(preg_match('/^[a-f0-9]{32}$/', $dir)){
+				$table = "uploads_" . $dir;
+			}
+			else{
+				exit("Invalid directory!");
+			}
 
-				if(strstr($prContent, '-', TRUE) != session_id()){
-					exit();
+			$download_verification = $db->prepare("SELECT * FROM $table WHERE upload_file = ? LIMIT 1");
+			$download_verification->bind_param("s", $name);
+			$download_verification->execute();
+			$result = $download_verification->get_result();
+
+			if($result->num_rows == 1){
+				$row = $result->fetch_array();
+
+				if($row['shared'] == 1){
+					$allowDownload = 1;
 				}
 				else{
-					downloadContent($tmpContent);
-					
+					if(isset($_SESSION['username'])){
+						$username = $_SESSION['username'];
+						if(md5(strtolower($username)) == $dir){
+							$allowDownload = 1;
+						}
+					}
+					else{
+						$allowDownlaod = 0;
+					}
+				}
+
+				if($allowDonwload = 1){
+					if($_GET['download'] == 1){ //encrypted
+						$prContent = session_id() . "-" . substr($name, 0, -4);
+						$tmpContent = "/var/www/aleator.stream/tmp/" . $prContent;
+
+						if(file_exists($tmpContent)){
+							downloadContent($tmpContent);
+							exit();
+						}
+						else{
+							$title = 'Error | Aleator Stream';
+							include("inc/header.inc");
+							print '<p>';
+							print '<strong>Error</strong>';
+							print '</p>';
+							print '<p>';
+							print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+							print '</p>';
+							print '<p style="font-size: 90%; color: red">';
+							print "The file you requested was not found on the server. This could be a session ID mismatch.";
+							print '</p>';
+							include("inc/footer.inc");
+							exit();
+						}
+					}
+					else if($_GET['download'] == 2){ //plaintext
+						$plnContent = "/var/www/aleator.stream/uploads/" . $dir . "/" . $name;
+						if(file_exists($plnContent)){
+							downloadContent($plnContent);
+							exit();
+						}
+						else{
+							$title = 'Error | Aleator Stream';
+							include("inc/header.inc");
+							print '<p>';
+							print '<strong>Error</strong>';
+							print '</p>';
+							print '<p>';
+							print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+							print '</p>';
+							print '<p style="font-size: 90%; color: red">';
+							print "The file you requested was not found on the server.";
+							print '</p>';
+							include("inc/footer.inc");
+							exit();
+						}
+					}
+				}
+				else{
+					$title = 'Error | Aleator Stream';
+					include("inc/header.inc");
+					print '<p>';
+					print '<strong>Error</strong>';
+					print '</p>';
+					print '<p>';
+					print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+					print '</p>';
+					print '<p style="font-size: 90%; color: red">';
+					print "You are not authorised to download this content.";
+					print '</p>';
+					include("inc/footer.inc");
 					exit();
 				}
 			}
-			else if($_GET['download'] == 2){ //plaintext
-				$plnContent = "/var/www/aleator.stream/uploads/" . $dir . "/" . $name;
-
-				downloadContent($plnContent);
-				
+			else{
+				$title = 'Error | Aleator Stream';
+				include("inc/header.inc");
+				print '<p>';
+				print '<strong>Error</strong>';
+				print '</p>';
+				print '<p>';
+				print '<i class="fa fa-exclamation-triangle" aria-hidden="true" style="font-size: 1000%;"></i>';
+				print '</p>';
+				print '<p style="font-size: 90%; color: red">';
+				print "Content not found in database.";
+				print '</p>';
+				include("inc/footer.inc");
 				exit();
 			}
 		}
@@ -544,7 +650,6 @@
 										}
 									}
 									include("inc/footer.inc");
-
 									exit();
 								}
 								else{

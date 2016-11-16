@@ -15,11 +15,13 @@
 				else{
 					print $_SERVER['REMOTE_ADDR'];
 				}
-				print "! Aleator Stream is in alpha development." . "\n";
+				print "! Aleator Stream is no longer in development." . "\n";
 			?>
 		</h2>
 
-		<p style="font-size: 80%;">New! - <a href="http://z54pzh3e2qg4phj5.onion">z54pzh3e2qg4phj5.onion</a> on TOR &bull; <a href="/canary.asc">Warrant canary</a>.</p>
+		<p style="font-size: 80%;">
+			<a href="http://z54pzh3e2qg4phj5.onion">z54pzh3e2qg4phj5.onion</a> on TOR &bull; <a href="/canary.asc">Warrant canary</a>.
+		</p>
 
 		<hr>
 		
@@ -49,9 +51,9 @@
 					$bytes =  $bytes + filesize($uploadDir . $row['upload_file']);
 				}
 
-				$usage = number_format($bytes / 1048576, 2);
+				$usage = str_replace(",", "", number_format($bytes / 1048576, 2));
 
-				if(($usage/5000)*100 > 100){
+				if(($usage/2000)*100 > 100){
 					print '<p>';
 					print '<i class="fa fa-frown-o" aria-hidden="true" style="font-size: 500%;"></i>';
 					print '</p>';
@@ -195,6 +197,6 @@
 			</audio>
 		</p>
 
-		<?php
-			include("inc/footer.inc");
-		?>
+<?php
+	include("inc/footer.inc");
+?>

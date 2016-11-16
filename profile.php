@@ -43,9 +43,10 @@
 						}
 
 						$usage = number_format($bytes / 1048576, 2);
+						$usage_display = str_replace(",", "", $usage);
 
 						print '<p>';
-						print "<meter align='left' value='$usage' min='0' max='2000'></meter>";
+						print "<meter align='left' value='$usage_display' min='0' max='2000'></meter>";
 						print '</p>';
 						if(($usage/5000)*100 > 90){
 						print '<p style="font-size: 85%; color: red;">You\'re approaching the end of your storage quota!</p>';
