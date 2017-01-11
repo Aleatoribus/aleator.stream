@@ -2,11 +2,18 @@
 
 Aleator Stream is an attempt at cloud file storage and sharing with user-managed encryption that uses keys determined solely by the user on a per-upload basis.
 
-This is a project for Building IT Systems at RMIT University in Semester Two of 2016.
+This was a project for `Building IT Systems` at RMIT University in Semester Two of 2016.
+
+## Contributors
+
+* Aaron Horler
+* Samuel Thwin
+* Vanja Novakovic
+* Phu Dang
 
 ##License
 
-Copyright 2016 Aleatoribus (RMIT)
+Copyright 2016-2017 Aleatoribus (RMIT)
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
