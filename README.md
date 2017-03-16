@@ -11,7 +11,7 @@ This was a project for `Building IT Systems` at RMIT University in Semester Two 
 * Vanja Novakovic
 * Phu Dang
 
-##License
+#### License
 
 Copyright 2016-2017 Aleatoribus (RMIT)
 
