@@ -1,5 +1,4 @@
 <?php
-	include("/var/www/aleator.stream/html/inc/security.inc");
 	session_start();
 	if(!isset($_SESSION['username'])){
 		$title = 'Error | Aleator Stream';

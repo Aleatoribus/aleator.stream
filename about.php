@@ -55,7 +55,7 @@
 						Samuel is a final year Associate Degree of Information Technology student, <br>and has previously completed a Certificate IV in Information Technology Networking at RMIT.
 					</p>
 					<p style="font-size: 85%;">
-						Samuel expects to complete the Bachelor’s Degree of Information Technology in 2017.
+						Samuel expects to complete the Bachelor’s Degree of Information Technology in 2018.
 					</p>
 					<p style="font-size: 85%;">
 						<i class="fa fa-linkedin" aria-hidden="true"></i> - <a href="https://www.linkedin.com/in/samuel-thwin-67285996">LinkedIn</a>
@@ -89,21 +89,7 @@
 			<h2>Project information</h2>
 
 			<p>
-				We're making an open source cloud file storage and sharing website with user-managed encryption that uses keys determined solely by the user on a per-upload basis.
-			</p>
-
-			<h2>Contact</h2>
-
-			<p>
-				For general matters contact <a href="mailto:admin@aleator.stream">admin@aleator.stream</a>.
-			</p>
-
-			<p>
-				For matters of security requiring urgent attention contact <a href="mailto:security@aleator.stream">security@aleator.stream</a>.
-			</p>
-
-			<p>
-				<i class="fa fa-key" aria-hidden="true"></i> <a href="media/public.asc">Our PGP public key.</a>
+				We made a prototype open source cloud file storage and sharing website with user-managed encryption that uses keys determined solely by the user on a per-upload basis.
 			</p>
 			
 <?php

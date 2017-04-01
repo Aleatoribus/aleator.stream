@@ -7,7 +7,7 @@
 			if(isset($_SESSION['username'])){
 				$db_location = "";
 				$db_user = "";
-				$db_passwd = '';
+				$db_passwd = "";
 				$db_name = "";
 				
 				$db = mysqli_connect($db_location, $db_user, $db_passwd, $db_name) or die(mysqli_error());

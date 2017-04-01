@@ -117,7 +117,6 @@
 		}
 	}
 
-	include("inc/security.inc");
 	session_start();
 
 	$db_source = "";
@@ -611,7 +610,7 @@
 									else if(strstr($filetype, '/', TRUE) == "image"){
 										print "<img src='display.php?dir=$dir&content=$name&view=1' style='max-height: 100%; max-width: 100%; width: auto; height: auto;'>";
 									}
-									else if(strstr($filetype, '/', TRUE) == "application"){ //maybe check check entire string for pdf support only
+									else if(strstr($filetype, '/', TRUE) == "application"){ //maybe check entire string for pdf support only
 										print "<object data='display.php?dir=$dir&content=$name&view=1' width='100%' height='800'></object>";
 									}
 									else if($filetype == "error/mkv"){

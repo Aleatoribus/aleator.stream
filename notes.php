@@ -6,7 +6,7 @@
 			<?php
 				$db_source = "";
 				$db_user = "";
-				$db_passwd = '';
+				$db_passwd = "";
 				$db_use = "";
 
 				$db = new mysqli($db_source, $db_user, $db_passwd, $db_use);

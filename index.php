@@ -19,10 +19,6 @@
 			?>
 		</h2>
 
-		<p style="font-size: 80%;">
-			<a href="http://z54pzh3e2qg4phj5.onion">z54pzh3e2qg4phj5.onion</a> on TOR &bull; <a href="/canary.asc">Warrant canary</a>.
-		</p>
-
 		<hr>
 		
 		<?php
@@ -174,7 +170,7 @@
 		<hr>
 
 		<p>
-			<strong>Here's a video of a bear that you can stream in the meantime.</strong>
+			<strong>Here's a video of a bear that you can stream instead.</strong>
 		</p>
 		
 		<p>

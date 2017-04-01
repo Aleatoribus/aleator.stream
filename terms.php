@@ -24,7 +24,7 @@
 			</p>
 
 			<p style="font-size: 85%;">
-			We reserve the right to remove any content that doesn’t comply with the service. Your content must adhere to applicable laws and regulations. Pornographic content depicting minors is strictly prohibited.
+			We reserve the right to remove any content that doesn’t comply with the service. Your content must adhere to applicable laws and regulations. Pornographic content is strictly prohibited.
 			</p>
 
 			<h3>No Warranties and Liabilities</h3>

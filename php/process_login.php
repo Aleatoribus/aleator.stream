@@ -1,5 +1,4 @@
 <?php
-	include("/var/www/aleator.stream/html/inc/security.inc");
 	session_start();
 	if(!isset($_SESSION['username'])){
 		if(isset($_POST['username']) && isset($_POST['password'])){

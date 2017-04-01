@@ -39,7 +39,6 @@
 							<a href="/notes.php">Notes</a>
 						</li>
 						<?php
-							include("/var/www/aleator.stream/html/inc/security.inc");
 							@session_start();
 							if(isset($_SESSION['username'])){
 								print '<li class="profile" style="font-size: 85%">';
